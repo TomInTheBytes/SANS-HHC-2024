@@ -1,1 +1,36 @@
-site_name: My Docs
+site_name: SANS Holiday Hack Challenge 2024 Write-up
+site_url: https://tominthebytes.github.io/SANS-HHC-2024/
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: green
+    accent: red
+  icon:
+    logo: fontawesome/solid/terminal
+  features:
+    - navigation.instant
+    - navigation.path
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+plugins:
+  - search
+markdown_extensions:
+  # Python Markdown
+  - toc:
+      permalink: true
+
+  # Python Markdown Extensions
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - attr_list
+  - footnotes
