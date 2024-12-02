@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://tominthebytes.github.io/SANS-HHC-2024/</loc>
+         <lastmod>2024-12-02</lastmod>
+    </url>
+    <url>
+         <loc>https://tominthebytes.github.io/SANS-HHC-2024/elf_connect/</loc>
+         <lastmod>2024-12-02</lastmod>
+    </url>
+    <url>
+         <loc>https://tominthebytes.github.io/SANS-HHC-2024/elf_minder_9000/</loc>
+         <lastmod>2024-12-02</lastmod>
+    </url>
+    <url>
+         <loc>https://tominthebytes.github.io/SANS-HHC-2024/first_terminal/</loc>
+         <lastmod>2024-12-02</lastmod>
+    </url>
+    <url>
+         <loc>https://tominthebytes.github.io/SANS-HHC-2024/santa_vision/</loc>
+         <lastmod>2024-12-02</lastmod>
+    </url>
+</urlset>
