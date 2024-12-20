@@ -24,6 +24,7 @@ theme:
   features:
     - navigation.instant
     - navigation.path
+    - navigation.sections
     - search.highlight
     - content.code.copy
     - content.code.annotate
@@ -62,3 +63,8 @@ markdown_extensions:
   - attr_list
   - footnotes
   - def_list
+nav:
+  - Prologue:
+      - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
+      - Elf Connect: prologue/elf_connect.md
+      - Elf Minder 9000: prologue/elf_minder_9000.md

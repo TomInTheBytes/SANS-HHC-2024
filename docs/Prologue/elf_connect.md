@@ -89,11 +89,41 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 === "Gold"
 
-    The hint suggests that we need to use the browser's developer tools console to solve this challenge. When looking through the HTML and JavaScript code, we see that the variable ```score``` is used to keep track of the current score (use ++ctrl+f++ for quick searching). We check for ```score``` in the console and can set it to a number higher than the high score[^1], such as ```score = 424242```.
+    The 'hard' hint suggests that we need to use the browser's developer tools (DevTools) to solve this challenge. When looking through the HTML and JavaScript code, we find a function called 'checkSelectedSet' which sounds important. In this function, some logic is executed when a set if deemed correct, like updating the score and check whether a high-score is reached. See the highlighted and annotated code below for more explanation.
 
-    To now trigger the win, we need to make the game check a set. We use one of the sets found in the silver part of the challenge and submit it to let the game compute the new (high)score, and get the gold achievement.
+    ``` js title="Executed logic after validating that a set is correct" linenums="1" hl_lines="6 10 13"
+    function checkSelectedSet(scene) {
+        // ...
+        if (isCorrectSet) {
+            // ...
+            // Update score by 100 points
+            score += 100; // (1)!
+            scoreText.setText('Score: ' + score);
 
-    [^1]: It seems like the ```score``` variable is not initialized right from the beginning and you need to browse the HTML code to get it to be acknowledged by the console. This could be caused by optimizations in Chrome.
+            // Add high-score board
+            if (score > 50000) { // (2)!
+                highScoreText.setText('High Score: ' + score);
+                emitter.explode(20);
+                submitAction(2); // (3)!
+                displaySuccessMessage('Great Job Hacker! Elf Connect Complete and Hacked!', function () {
+                });
+            }
+        }
+    }
+    ```
+
+    1. The 'score' variable is updated after finding a correct set. As this is happening client side, we could alter it ourselves using the console in the DevTools.
+    2. Validation of the high-score (above 50k).
+    3. Submitting some action, which appears to be the game ending. Since it submits action '2', there is likely also an action '1'.
+
+    Looking through the code we find that ```submitAction(1)``` is used after the game is completed by playing it as intended. This submission is therefore likely related to the silver/gold progression. We therefore don't have to manually edit the variable ```score``` via the DevTools console as we can directly submit the game winning action. Therefore, the answer is as follows:
+
+    !!! success "Answer"
+        Submit the following in the DevTools console (make sure to attach the console to the game iframe):
+
+        ```
+        submitAction(2)
+        ```
 
 ### Images
 
