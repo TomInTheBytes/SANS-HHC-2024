@@ -36,15 +36,15 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
     If you're curious, you might want to {==check under the hood==}. Try opening the {==browser's developer tools console==} and looking around—there might even be a {==variable named 'score'==} that could give you some insights. Sometimes, games hold secrets for those who dig a little deeper. Give it a shot and see what you can discover!
 
-## Answer
+## Solution
 
 === "Silver"
 
     When interacting with the terminal we get presented a minigame. As said by Angel, the game is called 'Connections', where we get sixteen words and we need to find four groups that belong together per round.
 
-    Not being a native English speaker, the first round is actually quite challenging. Fortunately, impatience actually rewards us here as prematurely checking the browser's develop tools quickly gives us insight into the answers when looking at scripts embedded in the HTML:
+    Not being a native English speaker and knowing all its culture, the first round is actually quite challenging. Fortunately, impatience actually rewards us here as prematurely checking the browser's DevTools quickly gives us insight into the answers when looking at JavaScript embedded in the HTML:
 
-    ```
+    ``` js
     const wordSets = {
         1: ["Tinsel", "Sleigh", "Belafonte", "Bag", "Comet", "Garland", "Jingle Bells", "Mittens", "Vixen", "Gifts", "Star", "Crosby", "White Christmas", "Prancer", "Lights", "Blitzen"],
         2: ["Nmap", "burp", "Frida", "OWASP Zap", "Metasploit", "netcat", "Cycript", "Nikto", "Cobalt Strike", "wfuzz", "Wireshark", "AppMon", "apktool", "HAVOC", "Nessus", "Empire"],
@@ -127,7 +127,7 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 ### Images
 
-![Image title](./images/elf_connect_1.png)
+![Image title](../images/elf_connect/elf_connect_1.png)
 
 ## Response
 
