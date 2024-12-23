@@ -124,6 +124,9 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
         }
     ```
 
+    !!! example "AI usage"
+        ChatGPT was used to quickly analyze and explain this code snippet.
+
     This code is responsible for computing the next point for the elf when encountering a spring. The game says the following:
 
     !!! quote "Help documentation"

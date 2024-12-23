@@ -65,6 +65,8 @@ markdown_extensions:
   - def_list
 nav:
   - Prologue:
-      - Holiday Hack Orientation: Prologue/holiday_hack_orientation.md
-      - Elf Connect: Prologue/elf_connect.md
-      - Elf Minder 9000: Prologue/elf_minder_9000.md
+      - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
+      - Elf Connect: prologue/elf_connect.md
+      - Elf Minder 9000: prologue/elf_minder_9000.md
+  - Act 1:
+      - cURLing: act_1/cURLing.md
