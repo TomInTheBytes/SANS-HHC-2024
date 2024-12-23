@@ -108,7 +108,14 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
     The flashlight shows us which keys are used.
     ///
 
-    We find that the following digits are used: ```26786```. We can use the following Python script to find the code:
+    We find that the following digits are used: ```26786```. In the DevTools we see the following request being made when we submit a code:
+
+    ![Code request](../images/frosty_keypad/frosty_keypad_7.png){width="500"}
+    /// caption
+    The request made when submitting a code.
+    ///
+
+    Based on this information we can use the following Python script to find the code:
 
     ``` py title="Brute-force Python script" linenums="1"
     import itertools
