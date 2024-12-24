@@ -78,9 +78,9 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
     | `3:10:4`      | T |
     | `14:8:3`      | A |
 
-    We find the word 'SANTA'! However, we will need to convert this to numbers somehow. In the past, keypads were also used to write text on phones with ['Multi-tap](https://en.wikipedia.org/wiki/Multi-tap). Every digit would represent some letters and multiple presses would let you cycle through them. In this case, we can only submit five digits and we would need more presses to use this system. There is also ['T9 dialing'](https://en.wikipedia.org/wiki/T9_(predictive_text)) which allows words to be formed with single key presses using a predictive system. We can use [this website](https://www.dcode.fr/t9-cipher) to encode our plaintext and find the digit combination that would give us this text:
+    We find the word 'SANTA'! However, we will need to convert this to numbers somehow. In the past, keypads were also used to write text on phones with [Multi-tap](https://en.wikipedia.org/wiki/Multi-tap). Every digit would represent some letters and multiple presses would let you cycle through them. In this case, we can only submit five digits and we would need more presses to use this system. There is also [T9 dialing](https://en.wikipedia.org/wiki/T9_(predictive_text)) which allows words to be formed with single key presses using a predictive system. We can use [this website](https://www.dcode.fr/t9-cipher) to encode our plaintext and find the digit combination that would give us this text:
 
-    ??? success "Answer"
+    !!! success "Answer"
 
         ```72682``` will translate into 'santa'.
 

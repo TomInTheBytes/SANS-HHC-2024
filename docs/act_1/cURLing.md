@@ -76,7 +76,7 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
             establish a secure connection to it. To learn more about this situation and
             how to fix it, please visit the web page mentioned above.
             ```
-        We need to instruct curl to trust the self-signed certificate. The is a [special flag](https://curl.se/docs/manpage.html#-k) that lets curl skip the verification step. We can then send our request to the webbpage:
+        We need to instruct curl to trust the self-signed certificate. The is the [-k flag](https://curl.se/docs/manpage.html#-k) that lets curl skip the verification step. We can then send our request to the webbpage:
 
         ``` sh
         curl -k https://curlingfun:9090/
