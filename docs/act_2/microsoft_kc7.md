@@ -317,7 +317,7 @@ There are no hints available.
 
         Answer: ```EncryptEverything.exe```
 
-    ??? success "Solution for Question 6"
+    ??? success "Solution for Question 7"
 
         ``` kql
         let flag = "EncryptEverything.exe";
@@ -327,7 +327,159 @@ There are no hints available.
 
         Answer: ```RW5jcnlwdEV2ZXJ5dGhpbmcuZXhl```
 
-=== "Section 2: Operation Surrender: Alabaster's Espionage"
+=== "Section 4: Echoes in the Frost: Tracking the Unknown Threat"
+
+    ??? success "Solution for Question 1"
+
+        Answer: ```stay frosty```
+
+    ??? success "Solution for Question 2"
+
+        ``` kql
+        Email
+        | where subject contains "credential"
+        | sort by timestamp asc
+        | take 1
+        ```
+
+        Answer: ```2024-12-12T14:48:55Z```
+
+    ??? success "Solution for Question 3"
+
+        ``` kql
+        let ip = Employees
+        | where name == "Noel Boetie"
+        | project ip_addr;
+        OutboundNetworkEvents
+        | where src_ip in (ip)
+        | where url contains "holidaybargainhunt"
+        | sort by timestamp asc
+        | take 1
+        ```
+
+        Answer: ```2024-12-12T15:13:55Z```
+
+    ??? success "Solution for Question 4"
+
+        ``` kql
+        PassiveDns
+        | where domain == "holidaybargainhunt.io"
+        | distinct ip
+        ```
+
+        Answer: ```182.56.23.122```
+
+    ??? success "Solution for Question 5"
+
+        ``` kql
+        AuthenticationEvents
+        | where src_ip == "182.56.23.122"
+        ```
+
+        Answer: ```WebApp-ElvesWorkshop```
+
+    ??? success "Solution for Question 6"
+
+        ``` kql
+        let auth_time = toscalar(AuthenticationEvents
+        | where src_ip == "182.56.23.122"
+        | project timestamp);
+        ProcessEvents
+        | where hostname == "WebApp-ElvesWorkshop"
+        | where timestamp > auth_time
+        ```
+
+        Answer: ```Invoke-Mimikatz.ps1```
+
+    ??? success "Solution for Question 7"
+
+        ``` kql
+        let ip = Employees
+        | where name == "Noel Boetie"
+        | project ip_addr;
+        let download_time = toscalar(OutboundNetworkEvents
+        | where src_ip in (ip)
+        | where url contains "holidaybargainhunt"
+        | sort by timestamp asc
+        | take 1
+        | project timestamp);
+        ProcessEvents
+        | where hostname == "Elf-Lap-A-Boetie"
+        | where timestamp > download_time
+        | sort by timestamp asc
+        ```
+
+        Answer: ```2024-12-12T15:14:38Z```
+
+    ??? success "Solution for Question 8"
+
+        ``` kql
+        let user_ip = Employees
+        | where name == "Noel Boetie"
+        | project ip_addr;
+        let download_time = toscalar(FileCreationEvents
+        | where hostname == "Elf-Lap-A-Boetie"
+        | where filename == "holidaycandy.hta"
+        | sort by timestamp asc
+        | project timestamp
+        | take 1);
+        OutboundNetworkEvents
+        | where timestamp > download_time
+        | where src_ip in (user_ip)
+        | sort by timestamp asc
+        ```
+
+        Answer: ```compromisedchristmastoys.com```
+
+    ??? success "Solution for Question 9"
+
+        ``` kql
+        let ip = Employees
+        | where name == "Noel Boetie"
+        | project ip_addr;
+        let download_time = toscalar(OutboundNetworkEvents
+        | where src_ip in (ip)
+        | where url contains "holidaybargainhunt"
+        | sort by timestamp asc
+        | take 1
+        | project timestamp);
+        ProcessEvents
+        | where hostname == "Elf-Lap-A-Boetie"
+        | where timestamp > download_time
+        | sort by timestamp asc
+        ```
+
+        Answer: ```sqlwriter.exe```
+
+    ??? success "Solution for Question 10"
+
+        ``` kql
+        let ip = Employees
+        | where name == "Noel Boetie"
+        | project ip_addr;
+        let download_time = toscalar(OutboundNetworkEvents
+        | where src_ip in (ip)
+        | where url contains "holidaybargainhunt"
+        | sort by timestamp asc
+        | take 1
+        | project timestamp);
+        ProcessEvents
+        | where hostname == "Elf-Lap-A-Boetie"
+        | where timestamp > download_time
+        | sort by timestamp asc
+        ```
+
+        Answer: ```frosty```
+
+    ??? success "Solution for Question 11"
+
+        ``` kql
+        let finalflag = "frosty";
+        let base64_encoded = base64_encode_tostring(finalflag);
+        print base64_encoded
+        ```
+
+        Answer: ```ZnJvc3R5```
 
 ## Response
 
