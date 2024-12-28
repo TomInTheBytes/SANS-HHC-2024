@@ -45,15 +45,15 @@ There are no hints available.
 
     `https://hhc24-snowballshowdown.holidayhackchallenge.com/game.html?username=T0m1nTh3Byt3s&roomId=48b3a5b5&roomType=private&id=9cac813f-cb6e-4fa9-bf43-233bcc69c48c&dna=ATATATTAATATATATATATTAGCATATATATTACGATATATATATATATATATTAATATATATATATATCGATATTACGATATATATATATGCCGATATATATATATTATAATATCGGC&singlePlayer=true`
 
-    You can also make your life easier by altering some game parameters (1), such as the blast radius of the snowballs:
+    You can also make your life easier by altering some game parameters(1), such as the blast radius of the snowballs:
     { .annotate }
 
-    1. Besides looking at the game code, we can quickly identity variables to check with this JavaScript code we can paste in the console:
+    1. Besides looking at the game code, we can quickly identity variables to check with this JavaScript code we can paste in the DevTools console:
     ```for(var b in window) {if(window.hasOwnProperty(b)) console.log(b);}```
 
     ```mainScene.snowBallBlastRadius = 10000```
 
-    The game will recognize this as cheating but you can still get the achievement.
+    The game will recognize this as cheating with a pop-up on the bottom of the screen but you can still get the achievement.
 
     !!! success "Answer"
 
