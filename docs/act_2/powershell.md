@@ -24,7 +24,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
 
     This challenge presents us a terminal to experiment with PowerShell. We must execute tasks to proceed to the next one.
 
-        ??? success "Solution for question 1"
+    ??? success "Solution to question 1"
 
         !!! quote "Task"
             There is a file in the current directory called 'welcome.txt'. Read the contents of this file
@@ -33,7 +33,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         type welcome.txt
         ```
 
-    ??? success "Solution for question 2"
+    ??? success "Solution to question 2"
 
         !!! quote "Task"
             Geez that sounds ominous, I'm sure we can get past the defense mechanisms.
@@ -44,7 +44,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         Get-Content welcome.txt | Measure-Object -Word
         ```
 
-    ??? success "Solution for question 3"
+    ??? success "Solution to question 3"
 
         !!! quote "Task"
             There is a server listening for incoming connections on this machine, that must be the weapons terminal. What port is it listening on?
@@ -53,7 +53,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         netstat -l
         ```
 
-    ??? success "Solution for question 4"
+    ??? success "Solution to question 4"
 
         !!! quote "Task"
             You should enumerate that webserver. Communicate with the server using HTTP, what status code do you get?
@@ -62,7 +62,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         Invoke-WebRequest http://localhost:1225
         ```
 
-    ??? success "Solution for question 5"
+    ??? success "Solution to question 5"
 
         !!! quote "Task"
             It looks like defensive measures are in place, it is protected by basic authentication.
@@ -77,7 +77,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         Invoke-WebRequest http://localhost:1225 -Authentication basic -Credential $Credential -AllowUnencryptedAuthentication
         ```
 
-    ??? success "Solution for question 6"
+    ??? success "Solution to question 6"
 
         !!! quote "Task"
             There are too many endpoints here.
@@ -107,7 +107,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         }
         ```
 
-    ??? success "Solution for question 7"
+    ??? success "Solution to question 7"
 
         !!! quote "Task"
             There seems to be a csv file in the comments of that page.
@@ -123,7 +123,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         $page.Content
         ```
 
-    ??? success "Solution for question 8"
+    ??? success "Solution to question 8"
 
         !!! quote "Task"
             Luckily the defense mechanisms were faulty!
@@ -139,7 +139,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         $page.Content
         ```
 
-    ??? success "Solution for question 9"
+    ??? success "Solution to question 9"
 
         !!! quote "Task"
             It looks like it requires a cookie token, set the cookie and try again.
@@ -162,7 +162,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         $page.Content
         ```
 
-    ??? success "Solution for question 10"
+    ??? success "Solution to question 10"
 
         !!! quote "Task"
             Sweet we got a MFA token! We might be able to get access to the system.
@@ -200,7 +200,7 @@ Difficulty: :material-star::material-star::material-star::material-star-outline:
         $page.Content
         ```
 
-    ??? success "Solution for question 11"
+    ??? success "Solution to question 11"
 
         !!! quote "Task"
             That looks like base64! Decode it so we can get the final secret!
