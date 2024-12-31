@@ -70,4 +70,34 @@ Difficulty: :material-star::material-star::material-star::material-star::materia
 
 ??? quote "Ribb Bonbowford"
 
-    ...
+    The first step to unraveling this mess is gaining access to the SantaVision portal. You'll need the right credentials to slip through the front door—what username will get you in?
+
+    Great work! You've taken the first step—nicely done. You're on the silver path and off to a strong start!
+
+    Impressive! You dug deeper and uncovered something hidden—very strategic work. You're well on your way to gold!
+
+    You've gained access, but there’s still much more to uncover. Patience and persistence will guide you—silver or gold, you're making progress!
+
+    Excellent progress! You've moved us closer to understanding this network—keep it up on the silver path!
+
+    (Gold hint) Look beyond the surface. Headers and subtle changes might just open new doors. Pay close attention to everything as you log in.
+
+    That’s the kind of attention to detail we need! You've uncovered a hidden path—solid gold effort!
+
+    You're doing fantastic! The northpolefeeds are now in your sights. Silver or gold, you're pushing forward with great momentum!
+
+    Wonderful job! You've uncovered a critical piece of the puzzle—well on track with the silver approach!
+
+    (Gold hint) Sometimes the answers are in the quiet moments. Pay attention to every feed and signal—you may find what you're looking for hidden deep in the streams.
+
+    You're almost there! The operation’s code is unlocked, but the final challenge is waiting. Silver or gold, you're close to victory!
+
+    It’s time to take back control of the Santa Broadcast Network. There really shouldn't be multiple administrators—send the right message, and Santa’s true spirit will return. What’s Santa test-driving this season?
+
+    Excellent! You've successfully removed the propaganda and restored the true spirit of the season. A solid silver finish—well done!
+
+    (Gold hint) Think about the kind of ride Santa would take in a world filled with innovation. His vehicle of choice might surprise you—pay attention to the futuristic details.
+
+    Phenomenal! You've figured it out—Santa’s on a new ride. You've earned your gold badge with this one!
+
+    Mission accomplished! The airwaves are restored, and the message is one of unity and teamwork. Whether silver or gold, you've done an incredible job!

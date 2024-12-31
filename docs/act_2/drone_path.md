@@ -30,6 +30,8 @@ There are no hints available.
 
 ## Solution
 
+
+
 ## Response
 
 ??? quote "Chimney Scissorsticks"
