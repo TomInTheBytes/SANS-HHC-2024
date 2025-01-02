@@ -291,7 +291,7 @@ There are no hints available.
     This seems to be another hint. We go back to our most recent .csv file as there many columns that contain TRUE/FALSE as values. They seem to alternate quite a lot between the rows. This could be encoded data. We do the following:
 
     - We remove all columns that are not representing a boolean value.
-    - We replace all TRUE with 1, and FALSE with 0.
+    - We replace all ```TRUE``` with ```1```, and ```FALSE``` with ```0```.
     - We copy the data and make sure to clean it properly in a text editor.
     - We use CyberChef to convert it with the recipe 'from binary'.
 

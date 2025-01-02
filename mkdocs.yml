@@ -65,6 +65,7 @@ markdown_extensions:
   - def_list
   - tables
 nav:
+  - Home: index.md
   - Prologue:
       - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
       - Elf Connect: prologue/elf_connect.md
