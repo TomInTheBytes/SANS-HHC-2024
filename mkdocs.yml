@@ -71,12 +71,17 @@ nav:
       - Elf Connect: prologue/elf_connect.md
       - Elf Minder 9000: prologue/elf_minder_9000.md
   - Act 1:
-      - cURLing: act_1/cURLing.md
       - Frosty Keypad: act_1/frosty_keypad.md
+      - cURLing: act_1/cURLing.md
       - Hardware Hacking 101: act_1/hardware_hacking_101.md
   - Act 2:
+      - Mobile Analysis: act_2/mobile_analysis.md
+      - Drone Path: act_2/drone_path.md
+      - PowerShell: act_2/powershell.md
       - Snowball Showdown: act_2/snowball_showdown.md
       - Microsoft KC7: act_2/microsoft_kc7.md
-      - PowerShell: act_2/powershell.md
-      - Drone Path: act_2/drone_path.md
-      - Mobile Analysis: act_2/mobile_analysis.md
+  - Act 3:
+      - Santa Vision: act_3/santa_vision.md
+      - Elf Stack: act_3/elf_stack.md
+      - Decrypt the Naughty-Nice List: act_3/decrypt.md
+      - Deactivate Frostbit Naughty-Nice List Publication: act_3/deactivate.md

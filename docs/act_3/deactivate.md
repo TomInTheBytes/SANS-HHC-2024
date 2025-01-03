@@ -41,7 +41,7 @@ This is an API endpoint that seems to be used for deactivation functionality. We
 The hints indicate to us that we need to look for a blind injection vulnerability while dealing with a filter. From [Decrypt](decrypt.md) we also learn that there is a debug setting that can be enabled. The following curl command will trigger an error (change bot UUID accordingly):
 
 ```title="Request"
-curl -X GET "https://api.frostbit.app/api/v1/frostbitadmin/bot/9c9c27f8-1436-4c04-b5fd-3a473d8c630e/deactivate?debug=1" -H "X-API-Key: '"
+curl -X GET "https://api.frostbit.app/api/v1/frostbitadmin/bot/cf9b1b33-b17b-433b-a473-2d8c5f06c1a5/deactivate?debug=1" -H "X-API-Key: '"
 ```
 
 ```json title="Response"
@@ -74,11 +74,11 @@ We know that we must look for [blind injection](https://portswigger.net/web-secu
 ' OR 1==2 OR SLEEP(1) AND '
 ```
 
-### Start injecting
+### Injection
 
 We can now start learning more about the content in the database. The `doc` variable is likely an object since it has keys. Any query that takes more than 1 second must be false until at least the delay condition. This can be done by trial and error but eventually a script will support us.
 
-!!! note "Number of attributes"
+!!! note "1. Number of attributes"
 
     The ```doc``` object has one attribute:
 
@@ -87,7 +87,7 @@ We can now start learning more about the content in the database. The `doc` vari
     value' OR LENGTH(ATTRIBUTES(doc, true)) == 1 OR SLEEP(1) OR '
     ```
 
-!!! note "Name of key"
+!!! note "2. Name of key"
 
     The ```doc``` key can be found using a script.
 
@@ -161,7 +161,7 @@ We can now start learning more about the content in the database. The `doc` vari
     Discovered key name: deactivate_api_key
     ```
 
-!!! note "Value of key"
+!!! note "3. Value of key"
 
     The ```doc``` key value can be found using the same script with small alterations and using the key name we found in the previous step.
 
