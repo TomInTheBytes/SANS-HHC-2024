@@ -22,7 +22,9 @@ Multiplayer world to roam around in.
 
 ## Personal note
 
-This is the first time I have written a write-up for a CTF, and the second time completing the SANS Holiday Hack Challenge after tackling it in 2022. I have thoroughly enjoyed the creativity and effort put into each challenge and highly appreciate this being available for free. Besides practicing my CTF skills, this write-up has also allowed me to gain experience with Github pages and MKDocs Material, two technologies that I have been wanting to experiment with. I have also opted to test ChatGPT more in depth using their premium offering for a month and learn more about writing effective prompts (more information below). All-in-all, this has been a pleasure to work on!
+This is the first time I have written a write-up for a CTF, and the second time completing the SANS Holiday Hack Challenge after tackling it in 2022. I have thoroughly enjoyed the creativity and effort put into each challenge and highly appreciate this being available for free. I also want to shoutout the awesome community on Discord that supported me with nudges when I needed them the most!
+
+Besides practicing my CTF skills, this write-up has also allowed me to gain experience with Github pages and MKDocs Material, two technologies that I have been wanting to experiment with. I have also opted to test ChatGPT more in depth using their premium offering for a month and learn more about writing effective prompts (more information below). All-in-all, this has been a pleasure to work on!
 
 ## Write-up information
 
