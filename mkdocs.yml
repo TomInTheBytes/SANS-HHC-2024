@@ -4,8 +4,8 @@ theme:
   name: material
   palette:
     scheme: slate
-    primary: green
-    accent: red
+    primary: custom
+    accent: custom
   icon:
     logo: fontawesome/solid/terminal
     admonition:
@@ -31,6 +31,8 @@ theme:
     - content.tooltips
 plugins:
   - search
+extra_css:
+  - stylesheets/extra.css
 markdown_extensions:
   # Python Markdown
   - toc:
@@ -65,7 +67,7 @@ markdown_extensions:
   - def_list
   - tables
 nav:
-  - Home: index.md
+  - Welcome: index.md
   - Prologue:
       - Holiday Hack Orientation: prologue/holiday_hack_orientation.md
       - Elf Connect: prologue/elf_connect.md

@@ -40,9 +40,14 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
 === "Silver"
 
-    When interacting with the terminal we get presented a minigame. As said by Angel, the game is called 'Connections', where we get sixteen words and we need to find four groups that belong together per round.
+    When interacting with the terminal we get presented a minigame. As said by Angel, the game is called 'Connections', where we get sixteen words and we need to find four groups of four that belong together per round.
 
-    Not being a native English speaker and knowing all its culture, the first round is actually quite challenging. Fortunately, impatience actually rewards us here as prematurely checking the browser's DevTools quickly gives us insight into the answers when looking at JavaScript embedded in the HTML:
+    ![Image title](../images/elf_connect/elf_connect_1.png){width="600"}
+    /// caption
+    Elf Connect
+    ///
+
+    Not being a native English speaker and knowing all of its culture, the first round is actually quite challenging. Fortunately, impatience actually rewards us here as prematurely checking the browser's DevTools quickly gives us insight into the answers when looking at JavaScript embedded in the HTML:
 
     ``` js
     const wordSets = {
@@ -124,10 +129,6 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
         ```
         submitAction(2)
         ```
-
-### Images
-
-![Image title](../images/elf_connect/elf_connect_1.png)
 
 ## Response
 

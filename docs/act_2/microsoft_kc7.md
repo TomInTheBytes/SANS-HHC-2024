@@ -70,15 +70,15 @@ There are no hints available.
 
 === "Section 1: KQL 101"
 
-    ??? success "Solution for Question 1"
+    ??? success "Solution to Question 1"
 
         Answer: ```let's do this```
 
-    ??? success "Solution for Question 2"
+    ??? success "Solution to Question 2"
 
         Answer: ```when in doubt take 10```
 
-    ??? success "Solution for Question 3"
+    ??? success "Solution to Question 3"
 
         ``` kql
         Employees
@@ -86,7 +86,7 @@ There are no hints available.
         ```
         Answer: ```90```
 
-    ??? success "Solution for Question 4"
+    ??? success "Solution to Question 4"
 
         ``` kql
         Employees
@@ -95,11 +95,11 @@ There are no hints available.
         ```
         Answer: ```Shinny Upatree```
 
-    ??? success "Solution for Question 5"
+    ??? success "Solution to Question 5"
 
         Answer: ```Operator```
 
-    ??? success "Solution for Question 6"
+    ??? success "Solution to Question 6"
 
         ``` kql
         let email = Employees
@@ -112,7 +112,7 @@ There are no hints available.
 
         Answer: ```31```
 
-    ??? success "Solution for Question 7"
+    ??? success "Solution to Question 7"
 
         ``` kql
         Email
@@ -123,7 +123,7 @@ There are no hints available.
 
         Answer: ```32```
 
-    ??? success "Solution for Question 8"
+    ??? success "Solution to Question 8"
 
         ``` kql
         let ip = Employees
@@ -137,7 +137,7 @@ There are no hints available.
 
         Answer: ```4```
 
-    ??? success "Solution for Question 9"
+    ??? success "Solution to Question 9"
 
         ``` kql
         PassiveDns
@@ -148,7 +148,7 @@ There are no hints available.
 
         Answer: ```10```
 
-    ??? success "Solution for Question 10"
+    ??? success "Solution to Question 10"
 
         ``` kql
         let twinkle_ips =
@@ -165,11 +165,11 @@ There are no hints available.
 
 === "Section 2: Operation Surrender: Alabaster's Espionage"
 
-    ??? success "Solution for Question 1"
+    ??? success "Solution to Question 1"
 
         Answer: ```surrender``
 
-    ??? success "Solution for Question 2"
+    ??? success "Solution to Question 2"
 
         ``` kql
         Email
@@ -179,7 +179,7 @@ There are no hints available.
 
         Answer: ```surrender@northpolemail.com```
 
-    ??? success "Solution for Question 3"
+    ??? success "Solution to Question 3"
 
         ``` kql
         Email
@@ -190,7 +190,7 @@ There are no hints available.
 
         Answer: ```22```
 
-    ??? success "Solution for Question 4"
+    ??? success "Solution to Question 4"
 
         ``` kql
         Email
@@ -201,7 +201,7 @@ There are no hints available.
 
         Answer: ```Team_Wombley_Surrender.doc```
 
-    ??? success "Solution for Question 5"
+    ??? success "Solution to Question 5"
 
         ``` kql
         Employees
@@ -216,7 +216,7 @@ There are no hints available.
 
         Answer: ```Joyelle Tinseltoe```
 
-    ??? success "Solution for Question 6"
+    ??? success "Solution to Question 6"
 
         ``` kql
         let user_host = Employees
@@ -230,7 +230,7 @@ There are no hints available.
 
         Answer: ```keylogger.exe```
 
-    ??? success "Solution for Question 7"
+    ??? success "Solution to Question 7"
 
         ``` kql
         let flag = "keylogger.exe";
@@ -242,11 +242,11 @@ There are no hints available.
 
 === "Section 3: Operation Snowfall: Team Wombley's Ransomware Raid"
 
-    ??? success "Solution for Question 1"
+    ??? success "Solution to Question 1"
 
         Answer: ```snowfall```
 
-    ??? success "Solution for Question 2"
+    ??? success "Solution to Question 2"
 
         ``` kql
         AuthenticationEvents
@@ -258,7 +258,7 @@ There are no hints available.
 
         Answer: ```59.171.58.12```
 
-    ??? success "Solution for Question 3"
+    ??? success "Solution to Question 3"
 
         ``` kql
         AuthenticationEvents
@@ -270,7 +270,7 @@ There are no hints available.
 
         Answer: ```23```
 
-    ??? success "Solution for Question 4"
+    ??? success "Solution to Question 4"
 
         ``` kql
         AuthenticationEvents
@@ -281,7 +281,7 @@ There are no hints available.
 
         Answer: ```RDP```
 
-    ??? success "Solution for Question 5"
+    ??? success "Solution to Question 5"
 
         ``` kql
         let user_host = Employees
@@ -299,7 +299,7 @@ There are no hints available.
 
         Answer: ```Secret_Files.zip```
 
-    ??? success "Solution for Question 6"
+    ??? success "Solution to Question 6"
 
         ``` kql
         let user_host = Employees
@@ -317,7 +317,7 @@ There are no hints available.
 
         Answer: ```EncryptEverything.exe```
 
-    ??? success "Solution for Question 7"
+    ??? success "Solution to Question 7"
 
         ``` kql
         let flag = "EncryptEverything.exe";
@@ -329,11 +329,11 @@ There are no hints available.
 
 === "Section 4: Echoes in the Frost: Tracking the Unknown Threat"
 
-    ??? success "Solution for Question 1"
+    ??? success "Solution to Question 1"
 
         Answer: ```stay frosty```
 
-    ??? success "Solution for Question 2"
+    ??? success "Solution to Question 2"
 
         ``` kql
         Email
@@ -344,7 +344,7 @@ There are no hints available.
 
         Answer: ```2024-12-12T14:48:55Z```
 
-    ??? success "Solution for Question 3"
+    ??? success "Solution to Question 3"
 
         ``` kql
         let ip = Employees
@@ -359,7 +359,7 @@ There are no hints available.
 
         Answer: ```2024-12-12T15:13:55Z```
 
-    ??? success "Solution for Question 4"
+    ??? success "Solution to Question 4"
 
         ``` kql
         PassiveDns
@@ -369,7 +369,7 @@ There are no hints available.
 
         Answer: ```182.56.23.122```
 
-    ??? success "Solution for Question 5"
+    ??? success "Solution to Question 5"
 
         ``` kql
         AuthenticationEvents
@@ -378,7 +378,7 @@ There are no hints available.
 
         Answer: ```WebApp-ElvesWorkshop```
 
-    ??? success "Solution for Question 6"
+    ??? success "Solution to Question 6"
 
         ``` kql
         let auth_time = toscalar(AuthenticationEvents
@@ -391,7 +391,7 @@ There are no hints available.
 
         Answer: ```Invoke-Mimikatz.ps1```
 
-    ??? success "Solution for Question 7"
+    ??? success "Solution to Question 7"
 
         ``` kql
         let ip = Employees
@@ -411,7 +411,7 @@ There are no hints available.
 
         Answer: ```2024-12-12T15:14:38Z```
 
-    ??? success "Solution for Question 8"
+    ??? success "Solution to Question 8"
 
         ``` kql
         let user_ip = Employees
@@ -431,7 +431,7 @@ There are no hints available.
 
         Answer: ```compromisedchristmastoys.com```
 
-    ??? success "Solution for Question 9"
+    ??? success "Solution to Question 9"
 
         ``` kql
         let ip = Employees
@@ -451,7 +451,7 @@ There are no hints available.
 
         Answer: ```sqlwriter.exe```
 
-    ??? success "Solution for Question 10"
+    ??? success "Solution to Question 10"
 
         ``` kql
         let ip = Employees
@@ -471,7 +471,7 @@ There are no hints available.
 
         Answer: ```frosty```
 
-    ??? success "Solution for Question 11"
+    ??? success "Solution to Question 11"
 
         ``` kql
         let finalflag = "frosty";

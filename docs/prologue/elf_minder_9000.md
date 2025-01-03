@@ -42,6 +42,11 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
 
     This challenge presents us with another minigame to play. Since we were awarded the silver achievement after playing the game normally last time, we assume that we have to do something similar again. The conversation with Poinsettia also indicates this. The game presents us various levels where we need to draw a path that collects all the crates and reaches the finish mark before running out of time. Looking at the hints, it seems like we can rotate paths when clicking on them and the 'Help' section is important to study.
 
+    ![Image title](../images/elf_minder_9000/elf_minder_9000_main.png){width="600"}
+    /// caption
+    Elf Minder 9000
+    ///
+
     Poinsettia says a higher score is better but it is not a requirement to complete the game. There also seems to be some weirdness with the spring entities, possibly described in a comment in the code.
 
     For the silver solution, we will play the game as intended and not focus on the scores. Note that clicking a non-occupied path while the elf is walking will rotate it. We need to use this to complete many of the levels.
@@ -139,10 +144,6 @@ Difficulty: :material-star::material-star-outline::material-star-outline::materi
     ??? success "Solution for 'A Real Pickle'"
 
         ![Image title](../images/elf_minder_9000/elf_minder_9000_level13.png)
-
-### Images
-
-![Image title](../images/elf_minder_9000/elf_minder_9000_main.png)
 
 ## Response
 
