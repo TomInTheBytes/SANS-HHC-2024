@@ -1,0 +1,1603 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tominthebytes.github.io/SANS-HHC-2024/act_3/elf_stack/">
+      
+      
+        <link rel="prev" href="../santa_vision/">
+      
+      
+        <link rel="next" href="../decrypt/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    <meta name="google-site-verification" content="9L8DSoaW3axOK-OvOrQUNdLF1e2hb0H4z9_7tf1mtuE" />
+
+    
+      
+        <title>Elf Stack - SANS Holiday Hack Challenge 2024 Write-up</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M64%20480c-35.3%200-64-28.7-64-64V96c0-35.3%2028.7-64%2064-64h320c35.3%200%2064%2028.7%2064%2064v213.5c0%2017-6.7%2033.3-18.7%2045.3L322.7%20461.3c-12%2012-28.3%2018.7-45.3%2018.7zm325.5-176H296c-13.3%200-24%2010.7-24%2024v93.5z%22/%3E%3C/svg%3E');--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M384%20512H96c-53%200-96-43-96-96V96C0%2043%2043%200%2096%200h304c26.5%200%2048%2021.5%2048%2048v288c0%2020.9-13.4%2038.7-32%2045.3V448c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032zM96%20384c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032h256v-64zm32-232c0%2013.3%2010.7%2024%2024%2024h176c13.3%200%2024-10.7%2024-24s-10.7-24-24-24H152c-13.3%200-24%2010.7-24%2024m24%2072c-13.3%200-24%2010.7-24%2024s10.7%2024%2024%2024h176c13.3%200%2024-10.7%2024-24s-10.7-24-24-24z%22/%3E%3C/svg%3E');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M256%20512a256%20256%200%201%200%200-512%20256%20256%200%201%200%200%20512m-32-352a32%2032%200%201%201%2064%200%2032%2032%200%201%201-64%200m-8%2064h48c13.3%200%2024%2010.7%2024%2024v88h8c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-80c-13.3%200-24-10.7-24-24s10.7-24%2024-24h24v-64h-24c-13.3%200-24-10.7-24-24s10.7-24%2024-24%22/%3E%3C/svg%3E');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M461.2%2018.9C472.7%2024%20480%2035.4%20480%2048v416c0%2012.6-7.3%2024-18.8%2029.1s-24.8%203.2-34.3-5.1l-46.6-40.7c-43.6-38.1-98.7-60.3-156.4-63V480c0%2017.7-14.3%2032-32%2032h-32c-17.7%200-32-14.3-32-32v-96C57.3%20384%200%20326.7%200%20256s57.3-128%20128-128h84.5c61.8-.2%20121.4-22.7%20167.9-63.3L427%2024c9.4-8.3%2022.9-10.2%2034.3-5.1zM224%20320v.2c70.3%202.7%20137.8%2028.5%20192%2073.4V118.3c-54.2%2044.9-121.7%2070.7-192%2073.4z%22/%3E%3C/svg%3E');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M434.8%2070.1c14.3%2010.4%2017.5%2030.4%207.1%2044.7l-256%20352c-5.5%207.6-14%2012.3-23.4%2013.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8%200-45.3s32.8-12.5%2045.3%200l101.5%20101.5%20234-321.7c10.4-14.3%2030.4-17.5%2044.7-7.1z%22/%3E%3C/svg%3E');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M256%20512a256%20256%200%201%200%200-512%20256%20256%200%201%200%200%20512m0-336c-17.7%200-32%2014.3-32%2032%200%2013.3-10.7%2024-24%2024s-24-10.7-24-24c0-44.2%2035.8-80%2080-80s80%2035.8%2080%2080c0%2047.2-36%2067.2-56%2074.5v3.8c0%2013.3-10.7%2024-24%2024s-24-10.7-24-24v-8.1c0-20.5%2014.8-35.2%2030.1-40.2%206.4-2.1%2013.2-5.5%2018.2-10.3%204.3-4.2%207.7-10%207.7-19.6%200-17.7-14.3-32-32-32zm-32%20192a32%2032%200%201%201%2064%200%2032%2032%200%201%201-64%200%22/%3E%3C/svg%3E');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M256%200c14.7%200%2028.2%208.1%2035.2%2021l216%20400c6.7%2012.4%206.4%2027.4-.8%2039.5S486.1%20480%20472%20480H40c-14.1%200-27.1-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9%2020.5-21%2035.2-21m0%20168c-13.3%200-24%2010.7-24%2024v112c0%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24V192c0-13.3-10.7-24-24-24m26.7%20216a26.7%2026.7%200%201%200-53.3%200%2026.7%2026.7%200%201%200%2053.3%200%22/%3E%3C/svg%3E');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20576%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M480-16c6.9%200%2013%204.4%2015.2%2010.9l13.5%2040.4%2040.4%2013.5C555.6%2051%20560%2057.1%20560%2064s-4.4%2013-10.9%2015.2l-40.4%2013.5-13.5%2040.4c-2.2%206.5-8.3%2010.9-15.2%2010.9s-13-4.4-15.2-10.9l-13.5-40.4-40.4-13.5C404.4%2077%20400%2070.9%20400%2064s4.4-13%2010.9-15.2l40.4-13.5%2013.5-40.4C467-11.6%20473.1-16%20480-16M321.4%2097.4c12.5-12.5%2032.8-12.5%2045.3%200l80%2080c12.5%2012.5%2012.5%2032.8%200%2045.3l-10.9%2010.9c7.9%2022%2012.2%2045.7%2012.2%2070.5%200%20114.9-93.1%20208-208%20208S32%20418.9%2032%20304%20125.1%2096%20240%2096c24.7%200%2048.5%204.3%2070.5%2012.3zM144%20304c0-53%2043-96%2096-96%2013.3%200%2024-10.7%2024-24s-10.7-24-24-24c-79.5%200-144%2064.5-144%20144%200%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24%22/%3E%3C/svg%3E');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M416%20427.4c58.5-44%2096-111.6%2096-187.4C512%20107.5%20397.4%200%20256%200S0%20107.5%200%20240c0%2075.8%2037.5%20143.4%2096%20187.4V464c0%2026.5%2021.5%2048%2048%2048h32v-40c0-13.3%2010.7-24%2024-24s24%2010.7%2024%2024v40h64v-40c0-13.3%2010.7-24%2024-24s24%2010.7%2024%2024v40h32c26.5%200%2048-21.5%2048-48zM96%20256a64%2064%200%201%201%20128%200%2064%2064%200%201%201-128%200m256-64a64%2064%200%201%201%200%20128%2064%2064%200%201%201%200-128%22/%3E%3C/svg%3E');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20640%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M352%200c0-17.7-14.3-32-32-32s-32%2014.3-32%2032v64h-96c-53%200-96%2043-96%2096v224c0%2053%2043%2096%2096%2096h256c53%200%2096-43%2096-96V160c0-53-43-96-96-96h-96zM160%20368c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24m120%200c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24m120%200c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24M224%20176a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96m144%2048a48%2048%200%201%201%2096%200%2048%2048%200%201%201-96%200m-304%200c0-17.7-14.3-32-32-32S0%20206.3%200%20224v96c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32zm544-32c-17.7%200-32%2014.3-32%2032v96c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32v-96c0-17.7-14.3-32-32-32%22/%3E%3C/svg%3E');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M288%200H128c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032v151.5L7.5%20426.3C2.6%20435%200%20444.7%200%20454.7%200%20486.4%2025.6%20512%2057.3%20512h333.4c31.6%200%2057.3-25.6%2057.3-57.3%200-10-2.6-19.8-7.5-28.4L320%20215.5V64c17.7%200%2032-14.3%2032-32S337.7%200%20320%200zm-96%20215.5V64h64v151.5c0%2011.1%202.9%2022.1%208.4%2031.8L306%20320H142l41.6-72.7c5.5-9.7%208.4-20.6%208.4-31.8%22/%3E%3C/svg%3E');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M0%20216C0%20149.7%2053.7%2096%20120%2096h8c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032h-8c-30.9%200-56%2025.1-56%2056v8h64c35.3%200%2064%2028.7%2064%2064v64c0%2035.3-28.7%2064-64%2064H64c-35.3%200-64-28.7-64-64zm256%200c0-66.3%2053.7-120%20120-120h8c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032h-8c-30.9%200-56%2025.1-56%2056v8h64c35.3%200%2064%2028.7%2064%2064v64c0%2035.3-28.7%2064-64%2064h-64c-35.3%200-64-28.7-64-64z%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#elf-stack" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SANS Holiday Hack Challenge 2024 Write-up" class="md-header__button md-logo" aria-label="SANS Holiday Hack Challenge 2024 Write-up" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M9.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L146.7 256zM224 384h256c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SANS Holiday Hack Challenge 2024 Write-up
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Elf Stack
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SANS Holiday Hack Challenge 2024 Write-up" class="md-nav__button md-logo" aria-label="SANS Holiday Hack Challenge 2024 Write-up" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M9.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L146.7 256zM224 384h256c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32"/></svg>
+
+    </a>
+    SANS Holiday Hack Challenge 2024 Write-up
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Welcome
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prologue
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prologue
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prologue/holiday_hack_orientation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Holiday Hack Orientation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prologue/elf_connect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Elf Connect
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prologue/elf_minder_9000/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Elf Minder 9000
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Act 1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Act 1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_1/frosty_keypad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Frosty Keypad
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_1/cURLing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    cURLing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_1/hardware_hacking_101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hardware Hacking 101
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Act 2
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Act 2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_2/mobile_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Mobile Analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_2/drone_path/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Drone Path
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_2/powershell/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PowerShell
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_2/snowball_showdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Snowball Showdown
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../act_2/microsoft_kc7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Microsoft KC7
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Act 3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Act 3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../santa_vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Santa Vision
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Elf Stack
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Elf Stack
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objective
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Response
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decrypt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Decrypt the Naughty-Nice List
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deactivate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deactivate Frostbit Naughty-Nice List Publication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objective
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Response
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="elf-stack">Elf Stack<a class="headerlink" href="#elf-stack" title="Permanent link">&para;</a></h1>
+<p>Difficulty: <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21z"/></svg></span><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21z"/></svg></span><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21z"/></svg></span><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21z"/></svg></span><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21z"/></svg></span></p>
+<h2 id="objective">Objective<a class="headerlink" href="#objective" title="Permanent link">&para;</a></h2>
+<div class="admonition question">
+<p class="admonition-title">Task description</p>
+<p>Help the ElfSOC analysts track down a malicious attack against the North Pole domain.</p>
+</div>
+<details class="quote">
+<summary>Fitzy Shortstack</summary>
+<p>Greetings! I'm the genius behind the North Pole Elf Stack SIEM. And oh boy, we’ve got a situation on our hands.</p>
+<p>Our system was attacked—Wombley’s faction unleashed their FrostBit ransomware, and it’s caused a digital disaster.</p>
+<p>The logs are a mess, and Wombley’s laptop—the only backup of the Naughty-Nice List—was smashed to pieces.</p>
+<p>Now, it’s all up to you to help me trace the attack vectors and events. We need to figure out how this went down before it’s too late.</p>
+<p>You’ll be using a containerized ELK stack or Linux CLI tools. Sounds like a fun little puzzle, doesn't it?</p>
+<p>Your job is to analyze these logs... think of it as tracking snow tracks but in a digital blizzard.</p>
+<p>If you can find the attack path, maybe we can salvage what’s left and get Santa’s approval.</p>
+<p>Santa’s furious at the faction fighting, and he’s disappointed. We have to make things right.</p>
+<p>So, let’s show these attackers that the North Pole’s defenses are no joke!</p>
+</details>
+<h2 id="hints">Hints<a class="headerlink" href="#hints" title="Permanent link">&para;</a></h2>
+<details class="tip">
+<summary>Elf Stack Intro</summary>
+<p>I'm part of the ElfSOC that protects the interests here at the North Pole. We built the Elf Stack SIEM, but not everybody uses it. Some of our senior analysts choose to use their command line skills, while others choose to deploy their own solution. Any way is possible to hunt through our logs!</p>
+</details>
+<details class="tip">
+<summary>Elf Stack WinEvent</summary>
+<p>One of our seasoned ElfSOC analysts told me about a <mark class="critic">great resource to have handy when hunting through event log data</mark>. I have it around here somewhere, or maybe <mark class="critic">it was online</mark>. Hmm.</p>
+</details>
+<details class="tip">
+<summary>Elf Stack Powershell</summary>
+<p>Our Elf Stack SIEM <mark class="critic">has some minor issues when parsing log data</mark> that we still need to figure out. Our ElfSOC SIEM engineers drank many cups of hot chocolate figuring out the right parsing logic. The engineers wanted to ensure that our junior analysts had a solid platform to hunt through log data.</p>
+</details>
+<details class="tip">
+<summary>Elf Stack Fields</summary>
+<p>If you are using your command line skills to solve the challenge, you might need to <mark class="critic">review the configuration files</mark> from the containerized Elf Stack SIEM.</p>
+</details>
+<details class="tip">
+<summary>Elf Stack Hard - Email1</summary>
+<p>I was on my way to grab a cup of hot chocolate the other day when I overheard the reindeer talking about playing games. The reindeer mentioned trying to invite Wombley and Alabaster to their games. This may or may not be great news. All I know is, the reindeer better <mark class="critic">create formal invitations</mark> to send to both Wombley and Alabaster.</p>
+</details>
+<details class="tip">
+<summary>Elf Stack Hard - Email2</summary>
+<p>Some elves have tried to make tweaks to the Elf Stack log parsing logic, but only a seasoned SIEM engineer or analyst may find that task useful.</p>
+</details>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>As I followed the Linux forensics course FOR577 earlier this year, I decided to tackle this challenge using the command line only. We download and extract the two log files into a single folder. We filter them to have a single log file for every type of log.</p>
+<div class="language-sh highlight"><span class="filename">Check the log types of log_chunk_1 and log_chunk_2</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>AuthLog
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>GreenCoat
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>NetflowPmacct
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>SnowGlowMailPxy
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>WindowsEvent
+</span></code></pre></div>
+<div class="language-sh highlight"><span class="filename">Create separate log files per log type</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;AuthLog&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>auth.log
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;GreenCoat&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>greencoat.log
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;NetflowPmacct&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>netflow.log
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;SnowGlowMailPxy&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>email.log
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;WindowsEvent&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>windows.log
+</span></code></pre></div>
+<p>We are then ready to tackle the questions.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Silver</label><label for="__tabbed_1_2">Gold</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<details class="success">
+<summary>Solution to question 1</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>How many unique values are there for the event_source field in all logs?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="m">5</span>
+</span></code></pre></div>
+<p>Answer: <code>5</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 2</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Which event_source has the fewest number of events related to it?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>wc<span class="w"> </span>-l<span class="w"> </span>*.log
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="m">269</span><span class="w"> </span>auth.log
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="m">7476</span><span class="w"> </span>greencoat.log
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="m">1398</span><span class="w"> </span>mail.log
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="m">34679</span><span class="w"> </span>netflow.log
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="m">2299324</span><span class="w"> </span>windows.log
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="m">2343146</span><span class="w"> </span>total
+</span></code></pre></div>
+<p>Answer: <code>Authlog</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 3</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the event_source from the previous question as a filter, what is the field name that contains the name of the system the log event originated from?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cat<span class="w"> </span>auth.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T00:10:01-04:00<span class="w"> </span>kringleSSleigH<span class="w"> </span>AuthLog<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;timestamp&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T03:10:01.304953-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;kringleSSleigH&quot;</span>,<span class="w"> </span><span class="s2">&quot;service&quot;</span>:<span class="w"> </span><span class="s2">&quot;CRON[4863]:&quot;</span>,<span class="w"> </span><span class="s2">&quot;message&quot;</span>:<span class="w"> </span><span class="s2">&quot;pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>hostname</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 4</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Which event_source has the second highest number of events related to it?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>wc<span class="w"> </span>-l<span class="w"> </span>*.log
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="m">269</span><span class="w"> </span>auth.log
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="m">7476</span><span class="w"> </span>greencoat.log
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="m">1398</span><span class="w"> </span>mail.log
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="m">34679</span><span class="w"> </span>netflow.log
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="m">2299324</span><span class="w"> </span>windows.log
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="m">2343146</span><span class="w"> </span>total
+</span></code></pre></div>
+<p>Answer: <code>NetflowPmacct</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 5</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the event_source from the previous question as a filter, what is the name of the field that defines the destination port of the Netflow logs?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cat<span class="w"> </span>netflow1.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:37:43-04:00<span class="w"> </span>kringleconnect<span class="w"> </span>NetflowPmacct<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;event_type&quot;</span>:<span class="w"> </span><span class="s2">&quot;purge&quot;</span>,<span class="w"> </span><span class="s2">&quot;ip_src&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.93&quot;</span>,<span class="w"> </span><span class="s2">&quot;ip_dst&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;port_src&quot;</span>:<span class="w"> </span><span class="m">29994</span>,<span class="w"> </span><span class="s2">&quot;port_dst&quot;</span>:<span class="w"> </span><span class="m">808</span>,<span class="w"> </span><span class="s2">&quot;ip_proto&quot;</span>:<span class="w"> </span><span class="s2">&quot;tcp&quot;</span>,<span class="w"> </span><span class="s2">&quot;timestamp_start&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:37:43-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;timestamp_end&quot;</span>:<span class="w"> </span><span class="s2">&quot;0000-00-00T00:00:00-00:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;packets&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;bytes&quot;</span>:<span class="w"> </span><span class="m">40</span>,<span class="w"> </span><span class="s2">&quot;src_host&quot;</span>:<span class="w"> </span><span class="s2">&quot;SnowSentry.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;dst_host&quot;</span>:<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>port_dst</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 6</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Which event_source is related to email traffic?</p>
+</div>
+<p>Answer: <code>SnowGlowMailPxy</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 7</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Looking at the event source from the last question, what is the name of the field that contains the actual email text?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T08:26:14-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>SnowGlowMailPxy<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;From&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user00@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;To&quot;</span>:<span class="w"> </span><span class="s2">&quot;asnowball04@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject&quot;</span>:<span class="w"> </span><span class="s2">&quot;Welcome to the North Pole!&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span>null,<span class="w"> </span><span class="s2">&quot;Message-ID&quot;</span>:<span class="w"> </span><span class="s2">&quot;&lt;532A9346-9F5F-4C29-BD40-CA171DD0E7DE@SecureElfGwy.northpole.local&gt;&quot;</span>,<span class="w"> </span><span class="s2">&quot;Return-Path&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user00@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Body&quot;</span>:<span class="w"> </span><span class="s2">&quot;Dear asnowball04,\n\nI wanted to inform you that we have a new team member joining us, [New Hire]. They will be joining our department as [Job Title]. Please extend a warm welcome and assist them with any necessary introductions and onboarding processes.\n\nLooking forward to working together!\n\nBest regards,\nelf_user00\n&quot;</span>,<span class="w"> </span><span class="s2">&quot;Received_Time&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T08:26:14-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP1&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP2&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.20&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>Body</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 8</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the 'GreenCoat' event_source, what is the only value in the hostname field?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cat<span class="w"> </span>greencoat.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T05:57:55-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>GreenCoat<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;ip&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.93&quot;</span>,<span class="w"> </span><span class="s2">&quot;user_identifier&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user03&quot;</span>,<span class="w"> </span><span class="s2">&quot;timestamp&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T05:57:55-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;method&quot;</span>:<span class="w"> </span><span class="s2">&quot;CONNECT&quot;</span>,<span class="w"> </span><span class="s2">&quot;url&quot;</span>:<span class="w"> </span><span class="s2">&quot;disc601.prod.do.dsp.mp.microsoft.com:443&quot;</span>,<span class="w"> </span><span class="s2">&quot;http_protocol&quot;</span>:<span class="w"> </span><span class="s2">&quot;HTTP/1.1&quot;</span>,<span class="w"> </span><span class="s2">&quot;status_code&quot;</span>:<span class="w"> </span><span class="m">200</span>,<span class="w"> </span><span class="s2">&quot;response_size&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;protocol&quot;</span>:<span class="w"> </span><span class="s2">&quot;HTTPS&quot;</span>,<span class="w"> </span><span class="s2">&quot;additional_info&quot;</span>:<span class="w"> </span><span class="s2">&quot;outgoing via 172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;host&quot;</span>:<span class="w"> </span><span class="s2">&quot;SnowSentry&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>SecureElfGwy</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 9</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the 'GreenCoat' event_source, what is the name of the field that contains the site visited by a client in the network?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cat<span class="w"> </span>greencoat.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T05:57:55-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>GreenCoat<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;ip&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.93&quot;</span>,<span class="w"> </span><span class="s2">&quot;user_identifier&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user03&quot;</span>,<span class="w"> </span><span class="s2">&quot;timestamp&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T05:57:55-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;method&quot;</span>:<span class="w"> </span><span class="s2">&quot;CONNECT&quot;</span>,<span class="w"> </span><span class="s2">&quot;url&quot;</span>:<span class="w"> </span><span class="s2">&quot;disc601.prod.do.dsp.mp.microsoft.com:443&quot;</span>,<span class="w"> </span><span class="s2">&quot;http_protocol&quot;</span>:<span class="w"> </span><span class="s2">&quot;HTTP/1.1&quot;</span>,<span class="w"> </span><span class="s2">&quot;status_code&quot;</span>:<span class="w"> </span><span class="m">200</span>,<span class="w"> </span><span class="s2">&quot;response_size&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;protocol&quot;</span>:<span class="w"> </span><span class="s2">&quot;HTTPS&quot;</span>,<span class="w"> </span><span class="s2">&quot;additional_info&quot;</span>:<span class="w"> </span><span class="s2">&quot;outgoing via 172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;host&quot;</span>:<span class="w"> </span><span class="s2">&quot;SnowSentry&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>url</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 10</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the 'GreenCoat' event_source, which unique URL and port (URL:port) did clients in the TinselStream network visit most?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cat<span class="w"> </span>greencoat.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span>-c<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-n<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="m">150</span><span class="w"> </span>pagead2.googlesyndication.com:443
+</span></code></pre></div>
+<p>Answer: <code>pagead2.googlesyndication.com:443</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 11</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the 'WindowsEvent' event_source, how many unique Channels is the SIEM receiving Windows event logs from?</p>
+</div>
+<details class="example">
+<summary>AI usage: awk command</summary>
+<p>ChatGPT was used to generate an AWK command.</p>
+</details>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>awk<span class="w"> </span>-F<span class="s1">&#39;&quot;&#39;</span><span class="w"> </span><span class="s1">&#39;{for (i=1; i&lt;=NF; i++) if ($i == &quot;Channel&quot;) print $(i+2)}&#39;</span><span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="m">5</span>
+</span></code></pre></div>
+<p>Answer: <code>5</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 12</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What is the name of the event.Channel (or Channel) with the second highest number of events?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>awk<span class="w"> </span>-F<span class="s1">&#39;&quot;&#39;</span><span class="w"> </span><span class="s1">&#39;{for (i=1; i&lt;=NF; i++) if ($i == &quot;Channel&quot;) print $(i+2)}&#39;</span><span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span>-c<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-n
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="m">50</span><span class="w"> </span>Windows<span class="w"> </span>PowerShell
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="m">191</span><span class="w"> </span>System
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="m">11751</span><span class="w"> </span>Microsoft-Windows-PowerShell/Operational
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="m">17713</span><span class="w"> </span>Microsoft-Windows-Sysmon/Operational
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="m">2268402</span><span class="w"> </span>Security
+</span></code></pre></div>
+<p>Answer: <code>Microsoft-Windows-Sysmon/Operational</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 13</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Our environment is using Sysmon to track many different events on Windows systems. What is the Sysmon Event ID related to loading of a driver?</p>
+</div>
+<p><a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon">Microsoft documentation</a></p>
+<p>Answer: <code>6</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 14</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What is the Windows event ID that is recorded when a new service is installed on a system?</p>
+</div>
+<p><a href="https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4697">Microsoft documentation</a></p>
+<p>Answer: <code>4697</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 15</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Using the WindowsEvent event_source as your initial filter, how many user accounts were created?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;EventID&quot;: 4720&#39;</span>
+</span></code></pre></div>
+<p>Answer: <code>0</code></p>
+</details>
+</div>
+<div class="tabbed-block">
+<details class="success">
+<summary>Solution to question 1</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What is the event.EventID number for Sysmon event logs relating to process creation?</p>
+</div>
+<p><a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon">Microsoft documentation</a></p>
+<p>Answer: <code>1</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 2</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>How many unique values are there for the 'event_source' field in all of the logs?</p>
+</div>
+<p>Answer: <code>5</code> (from question 1 of the silver achievement)</p>
+</details>
+<details class="success">
+<summary>Solution to question 3</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What is the event_source name that contains the email logs?</p>
+</div>
+<p>Answer: <code>SnowGlowMailPxy</code> (from question 6 of the silver achievement)</p>
+</details>
+<details class="success">
+<summary>Solution to question 4</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The North Pole network was compromised recently through a sophisticated phishing attack sent to one of our elves. The attacker found a way to bypass the middleware that prevented phishing emails from getting to North Pole elves. As a result, one of the Received IPs will likely be different from what most email logs contain. Find the email log in question and submit the value in the event 'From:' field for this email log event.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">38</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="m">172</span>.24.25.20
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="m">172</span>.24.25.25
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="m">34</span>.30.110.62
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>ReceivedIP1
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>ReceivedIP2
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;34.30.110.62&quot;</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:36:09-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>SnowGlowMailPxy<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;From&quot;</span>:<span class="w"> </span><span class="s2">&quot;kriskring1e@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;To&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user02@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject&quot;</span>:<span class="w"> </span><span class="s2">&quot;URGENT!&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span>null,<span class="w"> </span><span class="s2">&quot;Message-ID&quot;</span>:<span class="w"> </span><span class="s2">&quot;&lt;F3483D7F-3DBF-4A92-813D-4D9738479E50@SecureElfGwy.northpole.local&gt;&quot;</span>,<span class="w"> </span><span class="s2">&quot;Return-Path&quot;</span>:<span class="w"> </span><span class="s2">&quot;fr0sen@hollyhaven.snowflake&quot;</span>,<span class="w"> </span><span class="s2">&quot;Body&quot;</span>:<span class="w"> </span><span class="s2">&quot;We need to store the updated naughty and nice list somewhere secure. I posted it here http://hollyhaven.snowflake/howtosavexmas.zip. Act quickly so I can remove the link from the internet! I encrypted it with the password: n&amp;nli</span><span class="nv">$t_finAl1</span><span class="s2">\n\nthx!\nkris\n- Sent from the sleigh. Please excuse any Ho Ho Ho&#39;s.&quot;</span>,<span class="w"> </span><span class="s2">&quot;Received_Time&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:36:09-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP1&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP2&quot;</span>:<span class="w"> </span><span class="s2">&quot;34.30.110.62&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>kriskring1e@northpole.local</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 5</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Our ElfSOC analysts need your help identifying the hostname of the domain computer that established a connection to the attacker after receiving the phishing email from the previous question. You can take a look at our GreenCoat proxy logs as an event source. Since it is a domain computer, we only need the hostname, not the fully qualified domain name (FQDN) of the system.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cat<span class="w"> </span>greencoat.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;hollyhaven&quot;</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:36:26-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>GreenCoat<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;ip&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.12&quot;</span>,<span class="w"> </span><span class="s2">&quot;user_identifier&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user02&quot;</span>,<span class="w"> </span><span class="s2">&quot;timestamp&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:36:26-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;method&quot;</span>:<span class="w"> </span><span class="s2">&quot;GET&quot;</span>,<span class="w"> </span><span class="s2">&quot;url&quot;</span>:<span class="w"> </span><span class="s2">&quot;http://hollyhaven.snowflake/howtosavexmas.zip&quot;</span>,<span class="w"> </span><span class="s2">&quot;http_protocol&quot;</span>:<span class="w"> </span><span class="s2">&quot;HTTP/1.1&quot;</span>,<span class="w"> </span><span class="s2">&quot;status_code&quot;</span>:<span class="w"> </span><span class="m">200</span>,<span class="w"> </span><span class="s2">&quot;response_size&quot;</span>:<span class="w"> </span><span class="m">1098</span>,<span class="w"> </span><span class="s2">&quot;protocol&quot;</span>:<span class="w"> </span><span class="s2">&quot;HTTP&quot;</span>,<span class="w"> </span><span class="s2">&quot;additional_info&quot;</span>:<span class="w"> </span><span class="s2">&quot;outgoing via 172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;host&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>SleighRider</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 6</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>What was the IP address of the system you found in the previous question?</p>
+</div>
+<p>Answer: <code>172.24.25.12</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 7</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>A process was launched when the user executed the program AFTER they downloaded it. What was that Process ID number (digits only please)?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;howtosavexmas&quot;</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>Look<span class="w"> </span><span class="k">for</span><span class="w"> </span>first<span class="w"> </span>log<span class="w"> </span>not<span class="w"> </span>with<span class="w"> </span>.zip
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:37:09-04:00<span class="w"> </span>SleighRider.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15 10:37:09&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9223372036854775808,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">11</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Sysmon&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">11</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">714</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">10014</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">6340</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Sysmon/Operational&quot;</span>,<span class="w"> </span><span class="s2">&quot;Domain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NT AUTHORITY&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;SYSTEM&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountType&quot;</span>:<span class="w"> </span><span class="s2">&quot;User&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;File created (rule: FileCreate)&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;RuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Downloads&quot;</span>,<span class="w"> </span><span class="s2">&quot;UtcTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:37:09-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{face0b26-e149-6606-9300-000000000700}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Image&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Windows\\Explorer.EXE&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetFilename&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Users\\elf_user02\\Downloads\\howtosavexmas\\howtosavexmas.pdf.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;CreationUtcTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:37:09-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;User&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE\\elf_user02&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:37:09-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSysmon&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessId&quot;</span>:<span class="w"> </span><span class="m">5680</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;File created:&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>10014</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 8</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Did the attacker's payload make an outbound network connection? Our ElfSOC analysts need your help identifying the destination TCP port of this connection.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;howtosavexmas.pdf.exe&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;connection&quot;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:37:50-04:00<span class="w"> </span>SleighRider.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15 10:37:50&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9214364837600034816,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;AUDIT_SUCCESS&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">5156</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{54849625-5478-4994-A5BA-3E3B0328C30D}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">12810</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">734596</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">1460</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Filtering Platform Connection&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;Application&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\device\\harddiskvolume3\\users\\elf_user02\\downloads\\howtosavexmas\\howtosavexmas.pdf.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;Direction&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%14593&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.12&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourcePort&quot;</span>:<span class="w"> </span><span class="m">64543</span>,<span class="w"> </span><span class="s2">&quot;DestAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;103.12.187.43&quot;</span>,<span class="w"> </span><span class="s2">&quot;DestPort&quot;</span>:<span class="w"> </span><span class="m">8080</span>,<span class="w"> </span><span class="s2">&quot;Protocol&quot;</span>:<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="s2">&quot;FilterRTID&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;LayerName&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%14611&quot;</span>,<span class="w"> </span><span class="s2">&quot;LayerRTID&quot;</span>:<span class="w"> </span><span class="m">48</span>,<span class="w"> </span><span class="s2">&quot;RemoteUserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-0-0&quot;</span>,<span class="w"> </span><span class="s2">&quot;RemoteMachineID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-0-0&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:37:50-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSecurityEvent&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;ApplicationInformation_ProcessID&quot;</span>:<span class="w"> </span><span class="m">8096</span>,<span class="w"> </span><span class="s2">&quot;ApplicationInformation_ApplicationName&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\device\\harddiskvolume3\\users\\elf_user02\\downloads\\howtosavexmas\\howtosavexmas.pdf.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_Direction&quot;</span>:<span class="w"> </span><span class="s2">&quot;Outbound&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_SourceAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.12&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_SourcePort&quot;</span>:<span class="w"> </span><span class="m">64543</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_DestinationAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;103.12.187.43&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_DestinationPort&quot;</span>:<span class="w"> </span><span class="m">8443</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_Protocol&quot;</span>:<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="s2">&quot;FilterInformation_FilterRunTimeID&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;FilterInformation_LayerName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Connect&quot;</span>,<span class="w"> </span><span class="s2">&quot;FilterInformation_LayerRunTimeID&quot;</span>:<span class="w"> </span><span class="m">48</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;The Windows Filtering Platform has permitted a connection.&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>8443</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 9</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker escalated their privileges to the SYSTEM account by creating an inter-process communication (IPC) channel. Submit the alpha-numeric name for the IPC channel used by the attacker.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;sleighrider&quot;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;cmd.exe&quot;</span><span class="w"> </span>-i
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:38:22-04:00<span class="w"> </span>SleighRider.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15 10:38:22&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9187343239835811840,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">7045</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Service Control Manager&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{555908D1-A6D7-4695-8E1E-26931D2012F4}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">1571</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">628</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">5852</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;System&quot;</span>,<span class="w"> </span><span class="s2">&quot;Domain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user02&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-21-3699322559-1991583901-1175093138-1110&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountType&quot;</span>:<span class="w"> </span><span class="s2">&quot;User&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServiceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;ddpvccdbr&quot;</span>,<span class="w"> </span><span class="s2">&quot;ImagePath&quot;</span>:<span class="w"> </span><span class="s2">&quot;cmd.exe /c echo ddpvccdbr &gt; \\\\.\\pipe\\ddpvccdbr&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServiceType&quot;</span>:<span class="w"> </span><span class="s2">&quot;user mode service&quot;</span>,<span class="w"> </span><span class="s2">&quot;StartType&quot;</span>:<span class="w"> </span><span class="s2">&quot;demand start&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:38:22-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSystemEvent&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServiceFileName&quot;</span>:<span class="w"> </span><span class="s2">&quot;cmd.exe /c echo ddpvccdbr &gt; \\\\.\\pipe\\ddpvccdbr&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServiceStartType&quot;</span>:<span class="w"> </span><span class="s2">&quot;demand start&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServiceAccount&quot;</span>:<span class="w"> </span><span class="s2">&quot;LocalSystem&quot;</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;A service was installed in the system.&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>ddpvccdbr</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 10</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker's process attempted to access a file. Submit the full and complete file path accessed by the attacker's process.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;sleighrider&quot;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;howtosavexmas.pdf.exe&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;EventID&quot;: 4663&#39;</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-15T10:38:28-04:00<span class="w"> </span>SleighRider.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15 10:38:28&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9214364837600034816,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;AUDIT_SUCCESS&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">4663</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{54849625-5478-4994-A5BA-3E3B0328C30D}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">12802</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">736288</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">4864</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Kernel Object&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectUserSid&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectUserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;SLEIGHRIDER</span>$<span class="s2">&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectDomainName&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectLogonId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x3e7&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectServer&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectType&quot;</span>:<span class="w"> </span><span class="s2">&quot;Process&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectName&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\Device\\HarddiskVolume3\\Windows\\System32\\lsass.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;HandleId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x2e8&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessList&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%4484\r\n\t\t\t\t&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessMask&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x10&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessName&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Users\\elf_user02\\Downloads\\howtosavexmas\\howtosavexmas.pdf.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;ResourceAttributes&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-15T10:38:28-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSecurityEvent&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_SecurityID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;SLEIGHRIDER</span>$<span class="s2">&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_AccountDomain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_LogonID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x3E7&quot;</span>,<span class="w"> </span><span class="s2">&quot;Object_ObjectServer&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Object_ObjectType&quot;</span>:<span class="w"> </span><span class="s2">&quot;Process&quot;</span>,<span class="w"> </span><span class="s2">&quot;Object_ObjectName&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\Device\\HarddiskVolume3\\Windows\\System32\\lsass.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;Object_HandleID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x2e8&quot;</span>,<span class="w"> </span><span class="s2">&quot;Object_ResourceAttributes&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessInformation_ProcessID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x1fa0&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessInformation_ProcessName&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Users\\elf_user02\\Downloads\\howtosavexmas\\howtosavexmas.pdf.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessRequestInformation_Accesses&quot;</span>:<span class="w"> </span><span class="s2">&quot;Read from process memory&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessRequestInformation&quot;</span>:<span class="w"> </span><span class="s2">&quot;,&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessRequestInformation_AccessMask&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x10&quot;</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;An attempt was made to access an object.&quot;</span><span class="o">}</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T10:45:48-04:00<span class="w"> </span>SleighRider.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16 10:45:48&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9223372036854775808,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;AUDIT_SUCCESS&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">4663</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{54849625-5478-4994-A5BA-3E3B0328C30D}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">12800</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">123456</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">10014</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">6340</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Domain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NT AUTHORITY&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;SYSTEM&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountType&quot;</span>:<span class="w"> </span><span class="s2">&quot;User&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Object Access&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;UtcTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T10:45:48-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{face0b26-426e-660c-eb0f-000000000700}&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessName&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Users\\elf_user02\\Downloads\\howtosavexmas\\howtosavexmas.pdf.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectServer&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectType&quot;</span>:<span class="w"> </span><span class="s2">&quot;File&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectName&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Users\\elf_user02\\Desktop\\kkringl315@10.12.25.24.pem&quot;</span>,<span class="w"> </span><span class="s2">&quot;HandleID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x3fc&quot;</span>,<span class="w"> </span><span class="s2">&quot;Accesses&quot;</span>:<span class="w"> </span><span class="s2">&quot;READ_CONTROL,SYNCHRONIZE,ReadData&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessMask&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x120089&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T10:45:48-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSecurity&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>C:\Users\elf_user02\Desktop\kkringl315@10.12.25.24.pem</code> (removed double slashes)</p>
+</details>
+<details class="success">
+<summary>Solution to question 11</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker attempted to use a secure protocol to connect to a remote system. What is the hostname of the target server?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cat<span class="w"> </span>*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;2024-09-16&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;10.12.25.24&quot;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:03:06-04:00<span class="w"> </span>kringleSSleigH<span class="w"> </span>AuthLog<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;timestamp&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T14:03:06.315201-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;kringleSSleigH&quot;</span>,<span class="w"> </span><span class="s2">&quot;service&quot;</span>:<span class="w"> </span><span class="s2">&quot;sshd[6301]:&quot;</span>,<span class="w"> </span><span class="s2">&quot;message&quot;</span>:<span class="w"> </span><span class="s2">&quot;Connection from 34.30.110.62 port 58634 on 10.12.25.24 port 802 rdomain \&quot;\&quot;&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>kringleSSleigH</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 12</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker created an account to establish their persistence on the Linux host. What is the name of the new account created by the attacker?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>cat<span class="w"> </span>auth.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>Accepted<span class="w"> </span>key<span class="w"> </span>RSA<span class="w"> </span>SHA256:AbfXsQOO05qHNT98Rhe1B7KzURo0viFfq2/gpAWlP7E<span class="w"> </span>found<span class="w"> </span>at<span class="w"> </span>/home/kkringl315/.ssh/authorized_keys:1
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>Accepted<span class="w"> </span>publickey<span class="w"> </span><span class="k">for</span><span class="w"> </span>kkringl315<span class="w"> </span>from<span class="w"> </span><span class="m">34</span>.30.110.62<span class="w"> </span>port<span class="w"> </span><span class="m">41606</span><span class="w"> </span>ssh2:<span class="w"> </span>RSA<span class="w"> </span>SHA256:AbfXsQOO05qHNT98Rhe1B7KzURo0viFfq2/gpAWlP7E
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>Accepted<span class="w"> </span>publickey<span class="w"> </span><span class="k">for</span><span class="w"> </span>kkringl315<span class="w"> </span>from<span class="w"> </span><span class="m">34</span>.30.110.62<span class="w"> </span>port<span class="w"> </span><span class="m">48202</span><span class="w"> </span>ssh2:<span class="w"> </span>RSA<span class="w"> </span>SHA256:AbfXsQOO05qHNT98Rhe1B7KzURo0viFfq2/gpAWlP7E
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>Accepted<span class="w"> </span>publickey<span class="w"> </span><span class="k">for</span><span class="w"> </span>kkringl315<span class="w"> </span>from<span class="w"> </span><span class="m">34</span>.30.110.62<span class="w"> </span>port<span class="w"> </span><span class="m">58634</span><span class="w"> </span>ssh2:<span class="w"> </span>RSA<span class="w"> </span>SHA256:AbfXsQOO05qHNT98Rhe1B7KzURo0viFfq2/gpAWlP7E
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>add<span class="w"> </span><span class="s1">&#39;ssdh&#39;</span><span class="w"> </span>to<span class="w"> </span>group<span class="w"> </span><span class="s1">&#39;sudo&#39;</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>add<span class="w"> </span><span class="s1">&#39;ssdh&#39;</span><span class="w"> </span>to<span class="w"> </span>shadow<span class="w"> </span>group<span class="w"> </span><span class="s1">&#39;sudo&#39;</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>changed<span class="w"> </span>user<span class="w"> </span><span class="s1">&#39;ssdh&#39;</span><span class="w"> </span>information
+</span></code></pre></div>
+<p>Answer: <code>ssdh</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 13</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker wanted to maintain persistence on the Linux host they gained access to and executed multiple binaries to achieve their goal. What was the full CLI syntax of the binary the attacker executed after they created the new user account?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cat<span class="w"> </span>auth.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;ssdh&quot;</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>...
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:00:14-04:00<span class="w"> </span>kringleSSleigH<span class="w"> </span>AuthLog<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;timestamp&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T14:00:14.317262-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;kringleSSleigH&quot;</span>,<span class="w"> </span><span class="s2">&quot;service&quot;</span>:<span class="w"> </span><span class="s2">&quot;sudo:&quot;</span>,<span class="w"> </span><span class="s2">&quot;message&quot;</span>:<span class="w"> </span><span class="s2">&quot; kkringl315 : TTY=pts/5 ; PWD=/opt ; USER=root ; COMMAND=/usr/sbin/usermod -a -G sudo ssdh&quot;</span><span class="o">}</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>...
+</span></code></pre></div>
+<p>Answer: <code>/usr/sbin/usermod -a -G sudo ssdh</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 14</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker enumerated Active Directory using a well known tool to map our Active Directory domain over LDAP. Submit the full ISO8601 compliant timestamp when the first request of the data collection attack sequence was initially recorded against the domain controller.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;dc01.northpole.local WindowsEvent&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;ldap connection&quot;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:10:12-04:00<span class="w"> </span>dc01.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;LogName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Directory Service&quot;</span>,<span class="w"> </span><span class="s2">&quot;Source&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-ActiveDirectory_DomainService&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">2889</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;LDAP Interface&quot;</span>,<span class="w"> </span><span class="s2">&quot;Level&quot;</span>:<span class="w"> </span><span class="s2">&quot;Information&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span><span class="s2">&quot;Classic&quot;</span>,<span class="w"> </span><span class="s2">&quot;Description&quot;</span>:<span class="w"> </span><span class="s2">&quot;The following client performed a SASL (Negotiate/Kerberos/NTLM/Digest) LDAP bind without requesting signing (integrity verification), or performed a simple bind over a clear text (non-SSL/TLS-encrypted) LDAP connection.&quot;</span>,<span class="w"> </span><span class="s2">&quot;Computer&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;ClientIPaddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.22:18598&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServicePort&quot;</span>:<span class="w"> </span><span class="m">389</span>,<span class="w"> </span><span class="s2">&quot;ServiceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;ServiceIpAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.153&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;BindType&quot;</span>:<span class="w"> </span><span class="s2">&quot;0 - Simple Bind that does not support signing&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:10:12-04:00&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>2024-09-16T11:10:12-04:00</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 15</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker attempted to perform an ADCS ESC1 attack, but certificate services denied their certificate request. Submit the name of the software responsible for preventing this initial attack.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;dc01.northpole.local WindowsEvent&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;certificate&quot;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;denied&quot;</span><span class="w"> </span>-i
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:14:12-04:00<span class="w"> </span>dc01.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;LogName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Source&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:14:12-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">4888</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Certification Services - Certificate Request Denied&quot;</span>,<span class="w"> </span><span class="s2">&quot;Level&quot;</span>:<span class="w"> </span><span class="s2">&quot;Information&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span><span class="s2">&quot;Audit Failure&quot;</span>,<span class="w"> </span><span class="s2">&quot;User&quot;</span>:<span class="w"> </span><span class="s2">&quot;N/A&quot;</span>,<span class="w"> </span><span class="s2">&quot;Computer&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Description&quot;</span>:<span class="w"> </span><span class="s2">&quot;A certificate request was made for a certificate template, but the request was denied because it did not meet the criteria.&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserInformation_UserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;CertificateInformation_CertificateAuthority&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf-dc01-SeaA&quot;</span>,<span class="w"> </span><span class="s2">&quot;CertificateInformation_RequestedTemplate&quot;</span>:<span class="w"> </span><span class="s2">&quot;Administrator&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReasonForRejection&quot;</span>:<span class="w"> </span><span class="s2">&quot;KringleGuard EDR flagged the certificate request.&quot;</span>,<span class="w"> </span><span class="s2">&quot;AdditionalInformation_RequesterComputer&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.12.25.24&quot;</span>,<span class="w"> </span><span class="s2">&quot;AdditionalInformation_RequestedUPN&quot;</span>:<span class="w"> </span><span class="s2">&quot;administrator@northpole.local&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>KringleGuard</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 16</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>We think the attacker successfully performed an ADCS ESC1 attack. Can you find the name of the user they successfully requested a certificate on behalf of?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;dc01.northpole.local WindowsEvent&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;EventID&quot;: 4886&#39;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:15:12-04:00<span class="w"> </span>dc01.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;LogName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Source&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:15:12-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">4886</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Certification Services - Certificate Issuance&quot;</span>,<span class="w"> </span><span class="s2">&quot;Level&quot;</span>:<span class="w"> </span><span class="s2">&quot;Information&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span><span class="s2">&quot;Audit Success&quot;</span>,<span class="w"> </span><span class="s2">&quot;User&quot;</span>:<span class="w"> </span><span class="s2">&quot;N/A&quot;</span>,<span class="w"> </span><span class="s2">&quot;Computer&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Description&quot;</span>:<span class="w"> </span><span class="s2">&quot;A certificate was issued to a user.&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserInformation_UserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserInformation_UPN&quot;</span>:<span class="w"> </span><span class="s2">&quot;nutcrakr@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;CertificateInformation_CertificateAuthority&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf-dc01-SeaA&quot;</span>,<span class="w"> </span><span class="s2">&quot;CertificateInformation_CertificateTemplate&quot;</span>:<span class="w"> </span><span class="s2">&quot;ElfUsers&quot;</span>,<span class="w"> </span><span class="s2">&quot;AdditionalInformation_RequesterComputer&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.12.25.24&quot;</span>,<span class="w"> </span><span class="s2">&quot;AdditionalInformation_CallerComputer&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.153&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>nutcrakr</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 17</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>One of our file shares was accessed by the attacker using the elevated user account (from the ADCS attack). Submit the folder name of the share they accessed.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;dc01.northpole.local WindowsEvent&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;nutcrakr&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;share&quot;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:18:43-04:00<span class="w"> </span>dc01.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16 11:18:43&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9214364837600034816,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;AUDIT_SUCCESS&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">5140</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{54849625-5478-4994-A5BA-3E3B0328C30D}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">12808</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">498420</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">5692</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;File Share&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectUserSid&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-21-3699322559-1991583901-1175093138-1112&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectUserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;nutcrakr&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectDomainName&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectLogonId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xd8fdb3&quot;</span>,<span class="w"> </span><span class="s2">&quot;ObjectType&quot;</span>:<span class="w"> </span><span class="s2">&quot;File&quot;</span>,<span class="w"> </span><span class="s2">&quot;IpAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;34.30.110.62&quot;</span>,<span class="w"> </span><span class="s2">&quot;IpPort&quot;</span>:<span class="w"> </span><span class="m">53378</span>,<span class="w"> </span><span class="s2">&quot;ShareName&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\\\*\\WishLists&quot;</span>,<span class="w"> </span><span class="s2">&quot;ShareLocalPath&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\??\\C:\\WishLists&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessMask&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x1&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessList&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%4416\r\n\t\t\t\t&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:18:43-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSecurityEvent&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_SecurityID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-21-3699322559-1991583901-1175093138-1112&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;nutcrakr&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_AccountDomain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_LogonID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xD8FDB3&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_ObjectType&quot;</span>:<span class="w"> </span><span class="s2">&quot;File&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_SourceAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;34.30.110.62&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_SourcePort&quot;</span>:<span class="w"> </span><span class="m">53378</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation&quot;</span>:<span class="w"> </span><span class="s2">&quot;,&quot;</span>,<span class="w"> </span><span class="s2">&quot;ShareInformation_ShareName&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\\\*\\WishLists&quot;</span>,<span class="w"> </span><span class="s2">&quot;ShareInformation_SharePath&quot;</span>:<span class="w"> </span><span class="s2">&quot;\\??\\C:\\WishLists&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessRequestInformation_AccessMask&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x1&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessRequestInformation_Accesses&quot;</span>:<span class="w"> </span><span class="s2">&quot;ReadData (or ListDirectory)&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccessRequestInformation&quot;</span>:<span class="w"> </span><span class="s2">&quot;,&quot;</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;A network share object was accessed.&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>WishLists</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 18</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The naughty attacker continued to use their privileged account to execute a PowerShell script to gain domain administrative privileges. What is the password for the account the attacker used in their attack payload?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;Payload&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;nutcrakr&quot;</span><span class="w"> </span>-i
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:33:12-04:00<span class="w"> </span>SleighRider.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;ContextInfo&quot;</span>:<span class="w"> </span><span class="s2">&quot; Severity = Informational\r\n Host Name = Default Host\r\n Host Version = 5.1.19041.1\r\n Host ID = 4571e982-1bfd-4d83-97f2-ce85d3e41b9d\r\n Host Application = powershell\r\n Engine Version = 5.1.19041.1\r\n Runspace ID = dd0ca0e4-fdfe-49be-ada7-2931df92cca6\r\n Pipeline ID = 1\r\n Command Name = Set-StrictMode\r\n Command Type = Cmdlet\r\n Script Name = \r\n Command Path = \r\n Sequence Number = 30\r\n User = NORTHPOLE\\elf_user02\r\n Connected User = \r\n Shell ID = Microsoft.PowerShell\r\n&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserData&quot;</span>:<span class="w"> </span><span class="s2">&quot;&quot;</span>,<span class="w"> </span><span class="s2">&quot;Payload&quot;</span>:<span class="w"> </span><span class="s2">&quot;Add-Type -AssemblyName System.DirectoryServices\n</span><span class="nv">$ldapConnString</span><span class="s2"> = \&quot;LDAP://CN=Domain Admins,CN=Users,DC=northpole,DC=local\&quot;\n</span><span class="nv">$username</span><span class="s2"> = \&quot;nutcrakr\&quot;\n</span><span class="nv">$pswd</span><span class="s2"> = &#39;fR0s3nF1@k3_s&#39;\n</span><span class="nv">$nullGUID</span><span class="s2"> = [guid]&#39;00000000-0000-0000-0000-000000000000&#39;\n</span><span class="nv">$propGUID</span><span class="s2"> = [guid]&#39;00000000-0000-0000-0000-000000000000&#39;\n</span><span class="nv">$IdentityReference</span><span class="s2"> = (New-Object System.Security.Principal.NTAccount(\&quot;northpole.local\\</span><span class="nv">$username</span><span class="s2">\&quot;)).Translate([System.Security.Principal.SecurityIdentifier])\n</span><span class="nv">$inheritanceType</span><span class="s2"> = [System.DirectoryServices.ActiveDirectorySecurityInheritance]::None\n</span><span class="nv">$ACE</span><span class="s2"> = New-Object System.DirectoryServices.ActiveDirectoryAccessRule </span><span class="nv">$IdentityReference</span><span class="s2">, ([System.DirectoryServices.ActiveDirectoryRights] \&quot;GenericAll\&quot;), ([System.Security.AccessControl.AccessControlType] \&quot;Allow\&quot;), </span><span class="nv">$propGUID</span><span class="s2">, </span><span class="nv">$inheritanceType</span><span class="s2">, </span><span class="nv">$nullGUID</span><span class="s2">\n</span><span class="nv">$domainDirEntry</span><span class="s2"> = New-Object System.DirectoryServices.DirectoryEntry </span><span class="nv">$ldapConnString</span><span class="s2">, </span><span class="nv">$username</span><span class="s2">, </span><span class="nv">$pswd</span><span class="s2">\n</span><span class="nv">$secOptions</span><span class="s2"> = </span><span class="nv">$domainDirEntry</span><span class="s2">.get_Options()\n</span><span class="nv">$secOptions</span><span class="s2">.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl\n</span><span class="nv">$domainDirEntry</span><span class="s2">.RefreshCache()\n</span><span class="nv">$domainDirEntry</span><span class="s2">.get_ObjectSecurity().AddAccessRule(</span><span class="nv">$ACE</span><span class="s2">)\n</span><span class="nv">$domainDirEntry</span><span class="s2">.CommitChanges()\n</span><span class="nv">$domainDirEntry</span><span class="s2">.dispose()\n</span><span class="nv">$ldapConnString</span><span class="s2"> = \&quot;LDAP://CN=Domain Admins,CN=Users,DC=northpole,DC=local\&quot;\n</span><span class="nv">$domainDirEntry</span><span class="s2"> = New-Object System.DirectoryServices.DirectoryEntry </span><span class="nv">$ldapConnString</span><span class="s2">, </span><span class="nv">$username</span><span class="s2">, </span><span class="nv">$pswd</span><span class="s2">\n</span><span class="nv">$user</span><span class="s2"> = New-Object System.Security.Principal.NTAccount(\&quot;northpole.local\\</span><span class="nv">$username</span><span class="s2">\&quot;)\n</span><span class="nv">$sid</span><span class="s2">=</span><span class="nv">$user</span><span class="s2">.Translate([System.Security.Principal.SecurityIdentifier])\n</span><span class="nv">$b</span><span class="s2">=New-Object byte[] </span><span class="nv">$sid</span><span class="s2">.BinaryLength\n</span><span class="nv">$sid</span><span class="s2">.GetBinaryForm(</span><span class="nv">$b</span><span class="s2">,0)\n</span><span class="nv">$hexSID</span><span class="s2">=[BitConverter]::ToString(</span><span class="nv">$b</span><span class="s2">).Replace(&#39;-&#39;,&#39;&#39;)\n</span><span class="nv">$domainDirEntry</span><span class="s2">.Add(\&quot;LDAP://&lt;SID=</span><span class="nv">$hexSID</span><span class="s2">&gt;\&quot;)\n</span><span class="nv">$domainDirEntry</span><span class="s2">.CommitChanges()\n</span><span class="nv">$domainDirEntry</span><span class="s2">.dispose()&quot;</span>,<span class="w"> </span><span class="s2">&quot;Provider_Name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-PowerShell&quot;</span>,<span class="w"> </span><span class="s2">&quot;Provider_Guid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{a0c1853b-5c40-4b15-8766-3cf1c58f985a}&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">4103</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;Level&quot;</span>:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">106</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="m">20</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x0&quot;</span>,<span class="w"> </span><span class="s2">&quot;TimeCreated_SystemTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:33:12-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventRecordID&quot;</span>:<span class="w"> </span><span class="m">55410</span>,<span class="w"> </span><span class="s2">&quot;Correlation_ActivityID&quot;</span>:<span class="w"> </span><span class="s2">&quot;{17aa0df9-5d3d-46e9-bce0-55b7a5be4b43}&quot;</span>,<span class="w"> </span><span class="s2">&quot;ParentProcessID&quot;</span>:<span class="w"> </span><span class="m">928</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">2859</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-PowerShell/Operational&quot;</span>,<span class="w"> </span><span class="s2">&quot;Computer&quot;</span>:<span class="w"> </span><span class="s2">&quot;SleighRider.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Security_UserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-21-3699322559-1991583901-1175093138-1110&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>fR0s3nF1@k3_s</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 19</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker then used remote desktop to remotely access one of our domain computers. What is the full ISO8601 compliant UTC EventTime when they established this connection?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;eventid&quot;: 4624&#39;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;logontype&quot;: 10&#39;</span><span class="w"> </span>-i
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:35:57-04:00<span class="w"> </span>dc01.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16 11:35:57&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9214364837600034816,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;AUDIT_SUCCESS&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">4624</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Security-Auditing&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{54849625-5478-4994-A5BA-3E3B0328C30D}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">12544</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">530313</span>,<span class="w"> </span><span class="s2">&quot;ActivityID&quot;</span>:<span class="w"> </span><span class="s2">&quot;{D72392BD-843F-0000-1F93-23D73F84DA01}&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">704</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">1124</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Security&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Logon&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectUserSid&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectUserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;DC01</span>$<span class="s2">&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectDomainName&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;SubjectLogonId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x3e7&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetUserSid&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-21-3699322559-1991583901-1175093138-1112&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetUserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;nutcrakr&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetDomainName&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetLogonId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xdd425e&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonType&quot;</span>:<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="s2">&quot;LogonProcessName&quot;</span>:<span class="w"> </span><span class="s2">&quot;User32 &quot;</span>,<span class="w"> </span><span class="s2">&quot;AuthenticationPackageName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Negotiate&quot;</span>,<span class="w"> </span><span class="s2">&quot;WorkstationName&quot;</span>:<span class="w"> </span><span class="s2">&quot;DC01&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{00000000-0000-0000-0000-000000000000}&quot;</span>,<span class="w"> </span><span class="s2">&quot;TransmittedServices&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;LmPackageName&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;KeyLength&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;ProcessName&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Windows\\System32\\svchost.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;IpAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.12.25.24&quot;</span>,<span class="w"> </span><span class="s2">&quot;IpPort&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;ImpersonationLevel&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%1833&quot;</span>,<span class="w"> </span><span class="s2">&quot;RestrictedAdminMode&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%1843&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetOutboundUserName&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetOutboundDomainName&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;VirtualAccount&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%1843&quot;</span>,<span class="w"> </span><span class="s2">&quot;TargetLinkedLogonId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xdd41af&quot;</span>,<span class="w"> </span><span class="s2">&quot;ElevatedToken&quot;</span>:<span class="w"> </span><span class="s2">&quot;%%1843&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:35:57-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSecurityEvent&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_SecurityID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;DC01</span>$<span class="s2">&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_AccountDomain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject_LogonID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x3E7&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonInformation_LogonType&quot;</span>:<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="s2">&quot;LogonInformation_RestrictedAdminMode&quot;</span>:<span class="w"> </span><span class="s2">&quot;No&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonInformation_VirtualAccount&quot;</span>:<span class="w"> </span><span class="s2">&quot;No&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonInformation_ElevatedToken&quot;</span>:<span class="w"> </span><span class="s2">&quot;No&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_SecurityID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-21-3699322559-1991583901-1175093138-1112&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;nutcrakr&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_AccountDomain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_LogonID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xDD425E&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_LinkedLogonID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xDD41AF&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_NetworkAccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_NetworkAccountDomain&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;NewLogon_LogonGUID&quot;</span>:<span class="w"> </span><span class="s2">&quot;{00000000-0000-0000-0000-000000000000}&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessInformation_ProcessID&quot;</span>:<span class="w"> </span><span class="s2">&quot;0x994&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessInformation_ProcessName&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Windows\\System32\\svchost.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_WorkstationName&quot;</span>:<span class="w"> </span><span class="s2">&quot;DC01&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_SourceNetworkAddress&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.12.25.24&quot;</span>,<span class="w"> </span><span class="s2">&quot;NetworkInformation_SourcePort&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;DetailedAuthenticationInformation_LogonProcess&quot;</span>:<span class="w"> </span><span class="s2">&quot;User32&quot;</span>,<span class="w"> </span><span class="s2">&quot;DetailedAuthenticationInformation_AuthenticationPackage&quot;</span>:<span class="w"> </span><span class="s2">&quot;Negotiate&quot;</span>,<span class="w"> </span><span class="s2">&quot;DetailedAuthenticationInformation_TransitedServices&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;DetailedAuthenticationInformation_PackageNameNTLMonly&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;DetailedAuthenticationInformation_KeyLength&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;An account was successfully logged on.\nThis event is generated when a logon session is created. It is generated on the computer that was accessed.\nThe subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe.\nThe logon type field indicates the kind of logon that occurred. The most common types are 2 (interactive) and 3 (network).\nThe New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on.\nThe network fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases.\nThe impersonation level field indicates the extent to which a process in the logon session can impersonate.\nThe authentication information fields provide detailed information about this specific logon request.\n- Logon GUID is a unique identifier that can be used to correlate this event with a KDC event.\n- Transited services indicate which intermediate services have participated in this logon request.\n- Package name indicates which sub-protocol was used among the NTLM protocols.\n- Key length indicates the length of the generated session key. This will be 0 if no session key was requested.&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>2024-09-16T15:35:57.000Z</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 20</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The attacker is trying to create their own naughty and nice list! What is the full file path they created using their remote desktop connection?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>cat<span class="w"> </span>windows.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;logonid&quot;: &quot;0xDD425E&#39;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;command&quot;</span><span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;WishLists&quot;</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:36:28-04:00<span class="w"> </span>dc01.northpole.local<span class="w"> </span>WindowsEvent<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;EventTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16 11:36:28&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hostname&quot;</span>:<span class="w"> </span><span class="s2">&quot;dc01.northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Keywords&quot;</span>:<span class="w"> </span>-9223372036854775808,<span class="w"> </span><span class="s2">&quot;EventType&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;SeverityValue&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;Severity&quot;</span>:<span class="w"> </span><span class="s2">&quot;INFO&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventID&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;SourceName&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Sysmon&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProviderGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Version&quot;</span>:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span><span class="s2">&quot;Task&quot;</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s2">&quot;OpcodeValue&quot;</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s2">&quot;RecordNumber&quot;</span>:<span class="w"> </span><span class="m">641</span>,<span class="w"> </span><span class="s2">&quot;ProcessID&quot;</span>:<span class="w"> </span><span class="m">6468</span>,<span class="w"> </span><span class="s2">&quot;ThreadID&quot;</span>:<span class="w"> </span><span class="m">4816</span>,<span class="w"> </span><span class="s2">&quot;Channel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft-Windows-Sysmon/Operational&quot;</span>,<span class="w"> </span><span class="s2">&quot;Domain&quot;</span>:<span class="w"> </span><span class="s2">&quot;NT AUTHORITY&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountName&quot;</span>:<span class="w"> </span><span class="s2">&quot;SYSTEM&quot;</span>,<span class="w"> </span><span class="s2">&quot;UserID&quot;</span>:<span class="w"> </span><span class="s2">&quot;S-1-5-18&quot;</span>,<span class="w"> </span><span class="s2">&quot;AccountType&quot;</span>:<span class="w"> </span><span class="s2">&quot;User&quot;</span>,<span class="w"> </span><span class="s2">&quot;Category&quot;</span>:<span class="w"> </span><span class="s2">&quot;Process Create (rule: ProcessCreate)&quot;</span>,<span class="w"> </span><span class="s2">&quot;Opcode&quot;</span>:<span class="w"> </span><span class="s2">&quot;Info&quot;</span>,<span class="w"> </span><span class="s2">&quot;RuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;-&quot;</span>,<span class="w"> </span><span class="s2">&quot;UtcTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:36:28-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{f151dc49-502c-660c-8702-000000000900}&quot;</span>,<span class="w"> </span><span class="s2">&quot;Image&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Windows\\System32\\notepad.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;FileVersion&quot;</span>:<span class="w"> </span><span class="s2">&quot;10.0.17763.1697 (WinBuild.160101.0800)&quot;</span>,<span class="w"> </span><span class="s2">&quot;Description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Notepad&quot;</span>,<span class="w"> </span><span class="s2">&quot;Product&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft\u00ae Windows\u00ae Operating System&quot;</span>,<span class="w"> </span><span class="s2">&quot;Company&quot;</span>:<span class="w"> </span><span class="s2">&quot;Microsoft Corporation&quot;</span>,<span class="w"> </span><span class="s2">&quot;OriginalFileName&quot;</span>:<span class="w"> </span><span class="s2">&quot;NOTEPAD.EXE&quot;</span>,<span class="w"> </span><span class="s2">&quot;CommandLine&quot;</span>:<span class="w"> </span><span class="s2">&quot;\&quot;C:\\Windows\\system32\\NOTEPAD.EXE\&quot; C:\\WishLists\\santadms_only\\its_my_fakelst.txt&quot;</span>,<span class="w"> </span><span class="s2">&quot;CurrentDirectory&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\WishLists\\santadms_only\\&quot;</span>,<span class="w"> </span><span class="s2">&quot;User&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE\\nutcrakr&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{f151dc49-500d-660c-5e42-dd0000000000}&quot;</span>,<span class="w"> </span><span class="s2">&quot;LogonId&quot;</span>:<span class="w"> </span><span class="s2">&quot;0xdd425e&quot;</span>,<span class="w"> </span><span class="s2">&quot;TerminalSessionId&quot;</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s2">&quot;IntegrityLevel&quot;</span>:<span class="w"> </span><span class="s2">&quot;Medium&quot;</span>,<span class="w"> </span><span class="s2">&quot;Hashes&quot;</span>:<span class="w"> </span><span class="s2">&quot;MD5=5394096A1CEBF81AF24E993777CAABF4,SHA256=A28438E1388F272A52559536D99D65BA15B1A8288BE1200E249851FDF7EE6C7E,IMPHASH=C8922BE3DCDFEB5994C9EEE7745DC22E&quot;</span>,<span class="w"> </span><span class="s2">&quot;ParentProcessGuid&quot;</span>:<span class="w"> </span><span class="s2">&quot;{f151dc49-500f-660c-5902-000000000900}&quot;</span>,<span class="w"> </span><span class="s2">&quot;ParentProcessId&quot;</span>:<span class="w"> </span><span class="m">1364</span>,<span class="w"> </span><span class="s2">&quot;ParentImage&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Windows\\explorer.exe&quot;</span>,<span class="w"> </span><span class="s2">&quot;ParentCommandLine&quot;</span>:<span class="w"> </span><span class="s2">&quot;C:\\Windows\\Explorer.EXE&quot;</span>,<span class="w"> </span><span class="s2">&quot;ParentUser&quot;</span>:<span class="w"> </span><span class="s2">&quot;NORTHPOLE\\nutcrakr&quot;</span>,<span class="w"> </span><span class="s2">&quot;EventReceivedTime&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:36:28-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleName&quot;</span>:<span class="w"> </span><span class="s2">&quot;inSysmon&quot;</span>,<span class="w"> </span><span class="s2">&quot;SourceModuleType&quot;</span>:<span class="w"> </span><span class="s2">&quot;im_msvistalog&quot;</span>,<span class="w"> </span><span class="s2">&quot;ProcessId&quot;</span>:<span class="w"> </span><span class="m">9152</span>,<span class="w"> </span><span class="s2">&quot;MoreDetails&quot;</span>:<span class="w"> </span><span class="s2">&quot;Process Create:&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Answer: <code>C:\WishLists\santadms_only\its_my_fakelst.txt</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 21</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The Wombley faction has user accounts in our environment. How many unique Wombley faction users sent an email message within the domain?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;.local&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>asnowball04@northpole.local
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>asnowball_05@northpole.local
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>asnowball08@northpole.local
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>asnowball09@northpole.local
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>elf_user00@northpole.local
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>elf_user01@northpole.local
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>elf_user02@northpole.local
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>elf_user03@northpole.local
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>elf_user04@northpole.local
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a>elf_user05@northpole.local
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a>elf_user06@northpole.local
+</span><span id="__span-30-14"><a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a>elf_user07@northpole.local
+</span><span id="__span-30-15"><a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a>elf_user08@northpole.local
+</span><span id="__span-30-16"><a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a>elf_user09@northpole.local
+</span><span id="__span-30-17"><a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a>elf_user10@northpole.local
+</span><span id="__span-30-18"><a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a>elf_user11@northpole.local
+</span><span id="__span-30-19"><a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a>kriskring1e@northpole.local
+</span><span id="__span-30-20"><a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a>wcub101@northpole.local
+</span><span id="__span-30-21"><a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a>wcub303@northpole.local
+</span><span id="__span-30-22"><a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a>wcub808@northpole.local
+</span><span id="__span-30-23"><a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a>wcube311@northpole.local
+</span></code></pre></div>
+<p>Answer: <code>4</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 22</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>The Alabaster faction also has some user accounts in our environment. How many emails were sent by the Alabaster users to the Wombley faction users?</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;From&quot;: &quot;asnowball&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;To&quot;: &quot;wcub&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="m">22</span>
+</span></code></pre></div>
+<p>Answer: <code>22</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 23</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Of all the reindeer, there are only nine. What's the full domain for the one whose nose does glow and shine? To help you narrow your search, search the events in the 'SnowGlowMailPxy' event source.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;rudolph&#39;</span><span class="w"> </span>-i
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>...
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:58:37-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>SnowGlowMailPxy<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;From&quot;</span>:<span class="w"> </span><span class="s2">&quot;RudolphRunner@rud01ph.glow&quot;</span>,<span class="w"> </span><span class="s2">&quot;To&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user05@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject&quot;</span>:<span class="w"> </span><span class="s2">&quot;Diversity and Inclusion Initiatives at The North Pole&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span>null,<span class="w"> </span><span class="s2">&quot;Message-ID&quot;</span>:<span class="w"> </span><span class="s2">&quot;&lt;A1E38EA6-50AF-47FA-A3FE-4C16B0084B2A@SecureElfGwy.northpole.local&gt;&quot;</span>,<span class="w"> </span><span class="s2">&quot;Return-Path&quot;</span>:<span class="w"> </span><span class="s2">&quot;NorthPolePostmaster@northpole.exchange&quot;</span>,<span class="w"> </span><span class="s2">&quot;Body&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user05,\n\nI wanted to update you on the latest progress with our\n&quot;</span>,<span class="w"> </span><span class="s2">&quot;Received_Time&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:58:37-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP1&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP2&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.20&quot;</span><span class="o">}</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>...
+</span></code></pre></div>
+<p>Answer: <code>rud01ph.glow</code></p>
+</details>
+<details class="success">
+<summary>Solution to question 24</summary>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>With a fiery tail seen once in great years, what's the domain for the reindeer who flies without fears? To help you narrow your search, search the events in the 'SnowGlowMailPxy' event source.</p>
+</div>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>cat<span class="w"> </span>mail.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;c0m3t&#39;</span><span class="w"> </span>-i
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>...
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>&lt;<span class="m">134</span>&gt;1<span class="w"> </span><span class="m">2024</span>-09-16T11:55:19-04:00<span class="w"> </span>SecureElfGwy<span class="w"> </span>SnowGlowMailPxy<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">{</span><span class="s2">&quot;From&quot;</span>:<span class="w"> </span><span class="s2">&quot;StockingStitcher@c0m3t.halleys&quot;</span>,<span class="w"> </span><span class="s2">&quot;To&quot;</span>:<span class="w"> </span><span class="s2">&quot;elf_user09@northpole.local&quot;</span>,<span class="w"> </span><span class="s2">&quot;Subject&quot;</span>:<span class="w"> </span><span class="s2">&quot;Training Opportunities at The North Pole&quot;</span>,<span class="w"> </span><span class="s2">&quot;Date&quot;</span>:<span class="w"> </span>null,<span class="w"> </span><span class="s2">&quot;Message-ID&quot;</span>:<span class="w"> </span><span class="s2">&quot;&lt;48025832-AF6A-49D9-9664-AB3A0CFC0356@SecureElfGwy.northpole.local&gt;&quot;</span>,<span class="w"> </span><span class="s2">&quot;Return-Path&quot;</span>:<span class="w"> </span><span class="s2">&quot;NorthPolePostmaster@northpole.exchange&quot;</span>,<span class="w"> </span><span class="s2">&quot;Body&quot;</span>:<span class="w"> </span><span class="s2">&quot;Dear elf_user09,\n\nI hope this email finds you motivated and ready for new challenges! As we continue to strive for excellence at The North Pole, I wanted to bring to your attention the exciting training opportunities available to all employees. \n\nInvesting in our professional development is crucial to stay ahead in the ever-evolving world of technology. Therefore, I would like to inform you about a series of upcoming training sessions and workshops designed to enhance our skills and knowledge.\n\n1. Professional Growth Workshop:\nDate: [Date]\nTime: [Time]\nLocation: [Venue]\nTopic: Building Effective Communication Skills for Team Collaboration\n\nThis workshop aims to strengthen our ability to effectively communicate and collaborate within our teams. It will provide practical tips and techniques to improve interpersonal skills, overcome communication barriers, and foster a collaborative work environment.\n\n2. Technical Webinar:\nDate: [Date]\nTime: [Time]\nLocation: Online (Webinar Link will be shared separately)\nTopic: Deep Dive into Data Encryption and Security Best Practices\n\nIn this technical webinar, we will explore the latest advancements in data encryption and security. Our experts will discuss current trends, best practices, and demonstrate how we can leverage this knowledge to enhance our projects&#39; security and protection against cyber threats.\n\n3. Leadership Development Program:\nDates: [Date 1], [Date 2], [Date 3], [Date 4]\nTime: [Time]\nLocation: [Venue]\nTheme: Leading with Innovation and Adaptability\n\nThe Leadership Development Program is tailored for high-potential individuals aspiring to take on leadership roles. This program will cover various aspects of effective leadership, including fostering innovation, adaptability, and managing change. Participants will gain insights from experienced leaders within our organization and have the chance to engage in interactive discussions and case studies.\n\nTo register for any of these training opportunities, please click on the provided link: [Registration Link]. Kindly note that seats are limited, and registrations will be accepted on a first-come, first-served basis.\n\nRemember, learning never stops, and continuous improvement is key to our success. I encourage you to take advantage of these training initiatives and further augment your capabilities.\n\nIf you have any questions or require further information, please do not hesitate to reach out to me or our dedicated HR team at [HR Contact Information].\n\nTogether, let&#39;s unlock our potential and embrace the path of endless possibilities!\n\nWarm regards,\n\nStockingStitcher\n&quot;</span>,<span class="w"> </span><span class="s2">&quot;Received_Time&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-09-16T11:55:19-04:00&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP1&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.25&quot;</span>,<span class="w"> </span><span class="s2">&quot;ReceivedIP2&quot;</span>:<span class="w"> </span><span class="s2">&quot;172.24.25.20&quot;</span><span class="o">}</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>...
+</span></code></pre></div>
+<p>Answer: <code>c0m3t.halleys</code></p>
+</details>
+</div>
+</div>
+</div>
+<h2 id="response">Response<a class="headerlink" href="#response" title="Permanent link">&para;</a></h2>
+<details class="quote">
+<summary>Fitzy Shortstack</summary>
+<p>Fantastic job! You worked through the logs using the ELK stack like a pro—efficient, quick, and spot-on. Maybe, just maybe, this will turn Santa’s frown upside down!</p>
+<p>Unbelievable! You dissected the attack chain using advanced analysis—impressive work! With determination like yours, we might just fix the mess and get Santa smiling again.</p>
+<p>Bravo! You pieced it all together, uncovering the attack path. Santa’s gonna be grateful for your quick thinking and tech savvyness. The North Pole owes you big time!</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "search.highlight", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>
