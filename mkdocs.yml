@@ -2,6 +2,7 @@ site_name: SANS Holiday Hack Challenge 2024 Write-up
 site_url: https://tominthebytes.github.io/SANS-HHC-2024/
 theme:
   name: material
+  custom_dir: overrides
   palette:
     scheme: slate
     primary: custom
